@@ -1,99 +1,44 @@
-import { Machine, interpret } from "xstate";
-import { createStore, combineReducers, applyMiddleware, compose } from "redux";
-import { objNameCreator } from "@/helpers/machine";
-
+import { connectAdvanced } from "react-redux";
+import {
+  createStore,
+  combineReducers
+  // applyMiddleware, compose
+} from "redux";
+import { createSpawnEvent, getSvc } from "@/helpers/machine";
 import basesReducer from "./bases";
-
-/**
- * Root statechart machine
- */
-const name = objNameCreator("root");
-const states = {
-  INIT: name.State("INIT"),
-  STARTED: name.State("STARTED"),
-  ERROR: name.State("ERROR")
-};
-
-let rootMachine = Machine({
-  initial: states.INIT,
-  states: {
-    [states.INIT]: {
-      invoke: {
-        src: serviceTypes.fetchBases,
-        onDone: states.STARTED,
-        onError: states.ERROR
-      }
-    },
-    [states.STARTED]: {},
-    [states.ERROR]: {}
-  }
-});
-/**
- * END Root statechart machine
- */
-
-/**
- * Reducer to store xstate state + service
- */
-const UPDATE = "@@xstate/UPDATE";
-function xstateReducer(state = null, action) {
-  if (action.type === UPDATE) {
-    return action.payload;
-  }
-  return state;
-}
-
-const INIT_SVC = "@@xservice/INIT";
-function xserviceReducer(state = null, action) {
-  if (action.type === INIT_SVC) {
-    return action.payload;
-  }
-  return state;
-}
+import xstatesReducer from "./xstates";
 
 /**
  * Create redux store
  */
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // add support for Redux dev tools
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // add support for Redux dev tools
 const store = createStore(
   combineReducers({
-    xstate: xstateReducer,
-    xservice: xserviceReducer,
+    xstates: xstatesReducer,
     bases: basesReducer
   }),
-  composeEnhancers(applyMiddleware(...[]))
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
-/**
- * Inject redux method into xstate machine
- */
-const initRootMachine = rootMachine.withContext({
-  redux: {
-    getState: store.getState,
-    dispatch: store.dispatch
-  }
-});
+export const customConnect = (selectorFactory, connectOptions) => {
+  const binder = machineHandler =>
+    machineHandler({ getState: store.getState, dispatch: store.dispatch });
 
-/**
- * Sync xstate service state with redux
- */
-const rootService = interpret(initRootMachine).onTransition(state => {
-  if (state.changed) {
-    store.dispatch({ type: UPDATE, payload: state });
-  }
-});
-rootService.start();
+  return connectAdvanced(selectorFactory, {
+    ...connectOptions,
+    bindStoreToHandler: binder,
+    regChildService: (machineHandler, { parent, name, ref }) => {
+      const machine = binder(machineHandler);
 
-/**
- * Inject xstate service + state into redux store
- */
-store.dispatch({
-  type: INIT_SVC,
-  payload: rootService
-});
-store.dispatch({
-  type: UPDATE,
-  payload: rootService.initialState
-});
+      const parentService = getSvc(store.getState, parent);
+      parentService.send(
+        createSpawnEvent(machine, {
+          name,
+          ref
+        })
+      );
+    }
+  });
+};
 
 export default store;

@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 // import Vue from "vue";
 
-import AppReact from "./AppReact";
+import Root from "./Root";
 // import AppVue from "./AppVue.vue";
 
 var router = new Navigo("#", true);
@@ -12,7 +12,7 @@ router
   .on(
     "react",
     async () => {
-      render(createElement(AppReact), document.getElementById("root"));
+      render(createElement(Root), document.getElementById("root"));
     },
     {
       leave: () => {

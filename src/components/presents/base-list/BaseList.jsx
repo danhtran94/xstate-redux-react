@@ -1,20 +1,13 @@
 import React from "react";
-import { useService } from "@xstate/react";
-import { events, states } from "./machine";
+import { states } from "./machine";
 
-const BaseList = ({ service }) => {
-  const [current, send] = useService(service, {
-    devTools: true
-  });
-
-  // console.log(current.value);
-
+export const BaseList = ({ modifier, bases, onCreateBase }) => {
   const views = {
     [states.EMPTY]: (
       <div>
-        You don't have any base.
+        {"You don't have any base."}
         <br />
-        <button onClick={() => send(events.CREATE_BASE)}>Create One</button>
+        <button onClick={onCreateBase}>Create One</button>
       </div>
     ),
     [states.ERROR]: <div>Error while fetching bases.</div>,
@@ -22,13 +15,13 @@ const BaseList = ({ service }) => {
     [states.LOADING]: <div>Loading...</div>,
     [states.SUCCESS]: (
       <div>
-        Show your bases. <br />
-        <button onClick={() => send(events.CREATE_BASE)}>Create More</button>
+        {JSON.stringify(bases)} <br />
+        <button onClick={onCreateBase}>Create More</button>
       </div>
     )
   };
 
-  return views[current.value];
+  return views[modifier];
 };
 
 export default BaseList;

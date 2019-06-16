@@ -1,20 +1,24 @@
-import {
-  ImmerReducer,
-  createActionCreators,
-  createReducerFunction
-} from "immer-reducer";
+const types = {
+  update: "bases/UPDATE",
+  add: "bases/ADD"
+};
 
-// reducers
-class BasesReducer extends ImmerReducer {
-  addBase(base) {
-    this.draftState.data = [...this.state.data, base];
+export const mutations = {
+  updateBases: bases => ({ type: types.update, payload: bases }),
+  addBase: base => ({ type: types.add, payload: base })
+};
+
+const initial = [];
+
+const basesReducer = (state = initial, { type, payload }) => {
+  switch (type) {
+    case `${types.update}`:
+      return [...payload];
+    case `${types.add}`:
+      return [...state, payload];
   }
-  setBases(bases) {
-    this.draftState.data = [...bases];
-  }
-}
 
-export const basesActions = createActionCreators(BasesReducer);
-const baseReducer = createReducerFunction(BasesReducer, { data: [] });
+  return state;
+};
 
-export default baseReducer;
+export default basesReducer;
