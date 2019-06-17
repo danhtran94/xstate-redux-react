@@ -1,11 +1,7 @@
 import { Machine } from "xstate";
-import {
-  objNameCreator,
-  spawnEventLogic,
-  syncSpawnedReduxActs
-} from "@/helpers/machine";
+import { objNameCreator, spawnEventLogic } from "@/helpers/machine";
 
-export const machineName = "root";
+export const machineName = "app";
 const name = objNameCreator(machineName);
 
 const states = {
@@ -14,23 +10,15 @@ const states = {
   ERROR: name.State("ERROR")
 };
 
-export default ({ dispatch }) =>
-  Machine(
-    {
-      id: machineName,
-      initial: states.INIT,
-      context: {},
-      states: {
-        [states.INIT]: {
-          on: {
-            ...spawnEventLogic
-          }
-        }
-      }
-    },
-    {
-      actions: {
-        ...syncSpawnedReduxActs(dispatch)
+export default Machine({
+  id: machineName,
+  initial: states.INIT,
+  context: {},
+  states: {
+    [states.INIT]: {
+      on: {
+        ...spawnEventLogic
       }
     }
-  );
+  }
+});

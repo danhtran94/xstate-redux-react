@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "machine": "babel-node cli/printMachine.js",
     "stats": "NODE_ENV=production webpack -p --mode production --profile --json > dist/stats.json",
     "analyze": "yarn stats && webpack-bundle-analyzer dist/stats.json",
     "build": "NODE_ENV=production webpack -p --mode production --progress --hide-modules",
@@ -11,7 +12,9 @@
     "dev": "NODE_ENV=development webpack-dev-server --mode development --port 3000"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
@@ -30,6 +33,7 @@
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.7.0",
     "node-sass": "^4.12.0",
+    "nodemon": "^1.19.1",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",

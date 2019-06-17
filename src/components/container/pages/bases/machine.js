@@ -7,23 +7,17 @@ const name = objNameCreator(machineName);
 export const guardTypes = {};
 
 // events
-export const events = {
-  SPAWN_BASE_CREATION_FORM: name.Event("SPAWN_BASE_CREATION_FORM"),
-  SPAWN_BASE_LIST: name.Event("SPAWN_BASE_LIST")
-};
+export const events = {};
 
 // actions.js - functions that perform an action like updating the stateful data in the app
-export const actionTypes = {
-  spawnMachine: name.Action("spawnMachine"),
-  storeService: name.Action("storeService")
-};
+export const actionTypes = {};
 
 // services - external i/o operations
 export const serviceTypes = {};
 
 export const states = {
   INIT: name.State("INIT"),
-  NORMAL: name.State("DEFAULT")
+  NORMAL: name.State("NORMAL")
 };
 
 export default Machine({

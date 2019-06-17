@@ -1,54 +1,35 @@
-import React, { useEffect } from "react";
+import React, { useMemo } from "react";
 import { bindActionCreators } from "redux";
-import { useMachine } from "@xstate/react";
-import { customConnect } from "@/resources/index";
+import { useService } from "@xstate/react";
+import { connect } from "react-redux";
+
+import { syncSpawnedReduxActs } from "@/helpers/machine";
 import { mutations } from "@/resources/xstates";
-import { createSpawnEvent } from "@/helpers/machine";
 
-import rootHandler from "./rootMachine";
-import PageBases, { pageBasesHandler } from "./pages/bases/Bases";
+import rootMachine from "./rootMachine";
+import PageBases from "./pages/bases/Bases";
 
-const App = ({ rootMachine, pageBasesMachine, addService, update }) => {
-  const [current, send, service] = useMachine(rootMachine);
+const appHandler = ({ dispatch }) =>
+  rootMachine.withConfig({
+    actions: {
+      ...syncSpawnedReduxActs(dispatch)
+    }
+  });
 
-  useEffect(() => {
-    addService({ name: "root", service });
+const App = ({ regService }) => {
+  const service = useMemo(() => regService(appHandler, { name: "app" }), []);
+  const [current, send] = useService(service);
 
-    service.onTransition(rootState => {
-      if (rootState.changed) {
-        update({ name: "root", state: rootState });
-      }
-    });
-
-    return () => service.stop();
-  }, []);
-
-  useEffect(() => {
-    send(
-      createSpawnEvent(pageBasesMachine, {
-        name: "page-bases",
-        ref: "pageBasesRef"
-      })
-    );
-  }, []);
-
-  const pageBasesSvc = current.context.pageBasesRef;
-
-  return <div>{pageBasesSvc && <PageBases service={pageBasesSvc} />}</div>;
+  return <PageBases />;
 };
 
-export default customConnect(
-  (dispatch, { bindStoreToHandler }) => (state, ownProps) => {
-    return {
-      ...ownProps,
-      ...bindActionCreators(
-        {
-          ...mutations
-        },
-        dispatch
-      ),
-      rootMachine: bindStoreToHandler(rootHandler),
-      pageBasesMachine: bindStoreToHandler(pageBasesHandler)
-    };
-  }
+export default connect(
+  null,
+  dispatch =>
+    bindActionCreators(
+      {
+        regService: mutations.regService
+      },
+      dispatch
+    )
 )(App);

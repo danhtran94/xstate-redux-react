@@ -1,5 +1,5 @@
 import React from "react";
-import { states } from "./machine";
+import { states } from "@/components/container/widgets/base-creation-form/machine";
 
 const BaseCreationForm = ({ modifier, onConfirm }) => {
   const views = {

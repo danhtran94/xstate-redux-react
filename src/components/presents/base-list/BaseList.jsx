@@ -1,5 +1,5 @@
 import React from "react";
-import { states } from "./machine";
+import { states } from "@/components/container/widgets/base-list/machine";
 
 export const BaseList = ({ modifier, bases, onCreateBase }) => {
   const views = {

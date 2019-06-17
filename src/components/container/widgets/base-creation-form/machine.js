@@ -39,7 +39,7 @@ export const states = {
   END: name.State("END")
 };
 
-const config = Machine({
+export default Machine({
   id: machineName,
   initial: states.END,
   states: {
@@ -83,5 +83,3 @@ const config = Machine({
     }
   }
 });
-
-export default config;

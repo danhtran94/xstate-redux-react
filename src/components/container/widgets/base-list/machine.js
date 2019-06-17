@@ -36,7 +36,7 @@ export const states = {
   ERROR: name.State("ERROR")
 };
 
-const config = Machine({
+export default Machine({
   id: machineName,
   initial: states.INIT,
   states: {
@@ -62,8 +62,8 @@ const config = Machine({
     [states.SUCCESS]: {
       on: {
         "": {
-          target: states.EMPTY,
-          cond: { type: guardTypes.shouldCreateNew }
+          cond: { type: guardTypes.shouldCreateNew },
+          target: states.EMPTY
         },
         [events.CREATE_BASE]: {
           actions: [actionTypes.beginCreateBase]
@@ -82,5 +82,3 @@ const config = Machine({
     }
   }
 });
-
-export default config;
