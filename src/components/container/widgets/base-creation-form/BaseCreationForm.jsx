@@ -3,10 +3,12 @@ import { bindActionCreators } from "redux";
 import { send } from "xstate";
 import { connect } from "react-redux";
 import { useService } from "@xstate/react";
+import { compose } from "ramda";
 
+import { intercept } from "@/helpers/intercept";
+import { getSvc } from "@/helpers/machine";
 import { mutations as xstateMutations } from "@/resources/xstates";
 import { mutations } from "@/resources/bases";
-import { getSvc } from "@/helpers/machine";
 
 import { events as baseListEvents } from "@/components/container/widgets/base-list/machine";
 import machine, { events, actionTypes, serviceTypes } from "./machine";
@@ -50,13 +52,16 @@ export const WidgetBaseCreationForm = ({ regService }) => {
   );
 };
 
-export default connect(
-  null,
-  dispatch =>
-    bindActionCreators(
-      {
-        regService: xstateMutations.regService
-      },
-      dispatch
-    )
+export default compose(
+  intercept,
+  connect(
+    null,
+    dispatch =>
+      bindActionCreators(
+        {
+          regService: xstateMutations.regService
+        },
+        dispatch
+      )
+  )
 )(WidgetBaseCreationForm);

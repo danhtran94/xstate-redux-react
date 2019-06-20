@@ -1,6 +1,8 @@
 import React from "react";
 import { states } from "@/components/container/widgets/base-list/machine";
 
+import WidgetBaseItem from "@/components/container/widgets/base-item";
+
 export const BaseList = ({ modifier, bases, onCreateBase }) => {
   const views = {
     [states.EMPTY]: (
@@ -15,7 +17,9 @@ export const BaseList = ({ modifier, bases, onCreateBase }) => {
     [states.LOADING]: <div>Loading...</div>,
     [states.SUCCESS]: (
       <div>
-        {JSON.stringify(bases)} <br />
+        {bases.map(base => (
+          <WidgetBaseItem base={base} />
+        ))}
         <button onClick={onCreateBase}>Create More</button>
       </div>
     )

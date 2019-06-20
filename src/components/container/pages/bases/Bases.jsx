@@ -3,11 +3,10 @@ import { useService } from "@xstate/react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { mutations } from "@/resources/xstates";
 import { syncSpawnedReduxActs } from "@/helpers/machine";
+import { mutations } from "@/resources/xstates";
 
-import WidgetBaseList from "@/components/container/widgets/base-list";
-import WidgetBaseCreationForm from "@/components/container/widgets/base-creation-form";
+import BasesPure from "./BasesPure";
 
 import machine from "./machine";
 
@@ -28,14 +27,8 @@ const BasesPage = ({ machine, regService }) => {
       }),
     []
   );
-  const [current, send] = useService(service);
-
-  return (
-    <React.Fragment>
-      <WidgetBaseCreationForm />
-      <WidgetBaseList />
-    </React.Fragment>
-  );
+  const [current] = useService(service);
+  return <BasesPure modifier={current.value} />;
 };
 
 export default connect(

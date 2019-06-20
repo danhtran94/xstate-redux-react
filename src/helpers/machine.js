@@ -32,6 +32,7 @@ export const syncSpawnedReduxActs = dispatch => ({
     [evt.refName]: spawn(evt.machine, evt.name)
   })),
   storeMachine: (ctx, evt) => {
+    console.log(ctx[evt.refName]);
     dispatch(
       mutations.addService({
         name: evt.name,
@@ -53,4 +54,14 @@ export const syncSpawnedReduxActs = dispatch => ({
 });
 
 export const getSvc = (fromState, name) => fromState().xstates[name].service;
+export const getNestedSvc = (fromState, selection) => {
+  const svcNames = selection.split(".");
+  const lastSvcNum = svcNames.length - 1;
+  const targetSvc = svcNames.slice(1).reduce((state, name, idx) => {
+    if (idx === lastSvcNum) {
+      return state.context[name];
+    }
+    return state.context[name].state;
+  }, fromState().xstates[name].state);
+};
 export const getState = (fromState, name) => fromState().xstates[name].state;
