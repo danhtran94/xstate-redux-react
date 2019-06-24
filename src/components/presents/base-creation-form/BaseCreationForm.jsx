@@ -1,22 +1,66 @@
-import React from "react";
-import { states } from "@/components/container/widgets/base-creation-form/machine";
+import React, { useMemo } from "react";
+import { bindActionCreators } from "redux";
+import { send } from "xstate";
+import { connect } from "react-redux";
+import { useService } from "@xstate/react";
+import { compose } from "ramda";
 
-const BaseCreationForm = ({ modifier, onConfirm }) => {
-  const views = {
-    [states.END]: <div />,
-    [states.ERROR]: <div>Creating error.</div>,
-    [states.INIT]: (
-      <div>
-        Please enter.
-        <button onClick={onConfirm}>Confirm</button>
-      </div>
-    ),
-    [states.INVALID]: <div>Invalid.</div>,
-    [states.CREATING]: <div>Requesting.</div>,
-    [states.SUCCESS]: <div>Complete.</div>
-  };
+import { intercept } from "@/helpers/intercept";
+import { getSvc } from "@/helpers/machine";
+import { xstateMutations } from "@/resources/xstates";
+import { basesMutations } from "@/resources/bases";
 
-  return views[modifier];
+import { events as baseListEvents } from "@/components/presents/base-list/machine";
+import machine, { events, actionTypes, serviceTypes } from "./machine";
+import PureBaseCreationForm from "./Pure";
+
+const handler = ({ getState, dispatch }) =>
+  machine.withConfig({
+    actions: {
+      [actionTypes.reloadBases]: send(baseListEvents.ADDED_BASE, {
+        to: () => getSvc(getState, "base-list")
+      })
+    },
+    services: {
+      [serviceTypes.createNewBase](ctx, event) {
+        return new Promise(resolve => {
+          resolve(event.data);
+        }).then(data => dispatch(basesMutations.addBase(data)));
+      }
+    }
+  });
+
+export const CtrlBaseCreationForm = ({ regService }) => {
+  const service = useMemo(
+    () =>
+      regService(handler, {
+        name: "base-creation-form"
+      }),
+    []
+  );
+  const [current, send] = useService(service);
+
+  return (
+    <PureBaseCreationForm
+      modifier={current.value}
+      onConfirm={() =>
+        send({ type: events.CONFIRM, data: { id: "from-creation-form" } })
+      }
+      onCancel={() => send({ type: events.CANCEL })}
+    />
+  );
 };
 
-export default BaseCreationForm;
+export default compose(
+  intercept,
+  connect(
+    null,
+    dispatch =>
+      bindActionCreators(
+        {
+          regService: xstateMutations.regService
+        },
+        dispatch
+      )
+  )
+)(CtrlBaseCreationForm);

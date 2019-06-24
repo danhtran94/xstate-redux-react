@@ -3,10 +3,12 @@ const types = {
   add: "bases/ADD"
 };
 
-export const mutations = {
+const mutations = {
   updateBases: bases => ({ type: types.update, payload: bases }),
   addBase: base => ({ type: types.add, payload: base })
 };
+
+export const basesMutations = mutations;
 
 const initial = [];
 

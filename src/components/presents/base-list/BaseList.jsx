@@ -1,31 +1,79 @@
-import React from "react";
-import { states } from "@/components/container/widgets/base-list/machine";
+import React, { useMemo } from "react";
+import { send } from "xstate";
+import { useService } from "@xstate/react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { compose } from "ramda";
 
-import WidgetBaseItem from "@/components/container/widgets/base-item";
+import { intercept } from "@/helpers/intercept";
+import { getSvc } from "@/helpers/machine";
+import { xstateMutations } from "@/resources/xstates";
+import { basesMutations } from "@/resources/bases";
+import { syncSpawnedReduxActs } from "@/helpers/machine";
 
-export const BaseList = ({ modifier, bases, onCreateBase }) => {
-  const views = {
-    [states.EMPTY]: (
-      <div>
-        {"You don't have any base."}
-        <br />
-        <button onClick={onCreateBase}>Create One</button>
-      </div>
-    ),
-    [states.ERROR]: <div>Error while fetching bases.</div>,
-    [states.INIT]: <div>Waiting to validating.</div>,
-    [states.LOADING]: <div>Loading...</div>,
-    [states.SUCCESS]: (
-      <div>
-        {bases.map(base => (
-          <WidgetBaseItem base={base} />
-        ))}
-        <button onClick={onCreateBase}>Create More</button>
-      </div>
-    )
-  };
+import { events as creationEvents } from "@/components/presents/base-creation-form/machine";
+import machine, {
+  events,
+  guardTypes,
+  actionTypes,
+  serviceTypes
+} from "./machine";
+import PureBaseList from "./Pure";
 
-  return views[modifier];
+export const handler = ({ getState, dispatch }) =>
+  machine.withConfig({
+    guards: {
+      [guardTypes.shouldCreateNew]() {
+        const { bases } = getState();
+        return bases.length === 0;
+      }
+    },
+    actions: {
+      ...syncSpawnedReduxActs(),
+      [actionTypes.beginCreateBase]: send(creationEvents.RESTART, {
+        to: () => getSvc(getState, "base-creation-form")
+      })
+    },
+    services: {
+      [serviceTypes.fetchBases]() {
+        return new Promise(resolve => {
+          resolve([]);
+        }).then(data => dispatch(basesMutations.updateBases(data)));
+      }
+    }
+  });
+
+export const CtrlBaseList = ({ regService, bases }) => {
+  const service = useMemo(
+    () =>
+      regService(handler, {
+        name: "base-list"
+      }),
+    []
+  );
+  const [current, send] = useService(service);
+
+  return (
+    <PureBaseList
+      modifier={current.value}
+      bases={bases}
+      onCreateBase={() => send(events.CREATE_BASE)}
+    />
+  );
 };
 
-export default BaseList;
+export default compose(
+  intercept,
+  connect(
+    state => ({
+      bases: state.bases
+    }),
+    dispatch =>
+      bindActionCreators(
+        {
+          regService: xstateMutations.regService
+        },
+        dispatch
+      )
+  )
+)(CtrlBaseList);

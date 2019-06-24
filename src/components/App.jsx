@@ -2,25 +2,29 @@ import React, { useMemo } from "react";
 import { bindActionCreators } from "redux";
 import { useService } from "@xstate/react";
 import { connect } from "react-redux";
+import { View } from "react-navi";
 
 import { syncSpawnedReduxActs } from "@/helpers/machine";
-import { mutations } from "@/resources/xstates";
+import { xstateMutations } from "@/resources/xstates";
 
-import rootMachine from "./rootMachine";
-import PageBases from "./pages/bases/Bases";
+import appMachine from "./appMachine";
 
-const appHandler = ({ dispatch }) =>
-  rootMachine.withConfig({
+const handler = ({ dispatch }) =>
+  appMachine.withConfig({
     actions: {
-      ...syncSpawnedReduxActs(dispatch)
+      ...syncSpawnedReduxActs()
     }
   });
 
 const App = ({ regService }) => {
-  const service = useMemo(() => regService(appHandler, { name: "app" }), []);
+  const service = useMemo(() => regService(handler, { name: "app" }), []);
   const [current, send] = useService(service);
 
-  return <PageBases />;
+  return (
+    <div className="app">
+      <View />
+    </div>
+  );
 };
 
 export default connect(
@@ -28,7 +32,7 @@ export default connect(
   dispatch =>
     bindActionCreators(
       {
-        regService: mutations.regService
+        regService: xstateMutations.regService
       },
       dispatch
     )

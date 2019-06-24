@@ -1,16 +1,21 @@
 import React from "react";
 import { Provider } from "react-redux";
+import { Router } from "react-navi";
 
 import store from "@/resources/index";
+import routes from "@/routes/index";
 
-// import Bases from "@/components/container/pages/bases/Bases";
-import App from "@/components/container/App";
+import App from "@/components/App";
+
+import "carbon-components/css/carbon-components.css";
+import "./style.scss";
 
 const Root = () => {
   return (
     <Provider store={store}>
-      <App />
-      {/* <a href="/#vue">To Vue</a> */}
+      <Router routes={routes}>
+        <App />
+      </Router>
     </Provider>
   );
 };

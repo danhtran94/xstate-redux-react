@@ -1,5 +1,5 @@
 import { Machine } from "xstate";
-import { objNameCreator } from "@/helpers/machine";
+import { objNameCreator, spawnEventLogic } from "@/helpers/machine";
 
 export const machineName = "base-list";
 const name = objNameCreator(machineName);
@@ -7,6 +7,7 @@ const name = objNameCreator(machineName);
 export const events = {
   RELOAD: name.Event("RELOAD"),
   CREATE_BASE: name.Event("CREATE_BASE"),
+  REMOVE_BASE: name.Event("REMOVE_BASE"),
   ADDED_BASE: name.Event("ADDED_BASE")
 };
 
@@ -39,6 +40,7 @@ export const states = {
 export default Machine({
   id: machineName,
   initial: states.INIT,
+  context: {},
   states: {
     [states.INIT]: {
       on: {
@@ -61,12 +63,16 @@ export default Machine({
     },
     [states.SUCCESS]: {
       on: {
+        ...spawnEventLogic,
+        [events.CREATE_BASE]: {
+          actions: [actionTypes.beginCreateBase]
+        },
+        [events.REMOVE_BASE]: {
+          actions: [actionTypes.beginCreateBase]
+        },
         "": {
           cond: { type: guardTypes.shouldCreateNew },
           target: states.EMPTY
-        },
-        [events.CREATE_BASE]: {
-          actions: [actionTypes.beginCreateBase]
         }
       }
     },
