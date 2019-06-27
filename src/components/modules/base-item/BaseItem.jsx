@@ -7,7 +7,7 @@ import { compose } from "ramda";
 import { intercept } from "@/helpers/intercept";
 import { useActor } from "@/helpers/machine";
 import { xstateMutations } from "@/resources/xstates";
-import { events as baseListEvents } from "@/components/presents/base-list/machine";
+import { events as baseListEvents } from "@/components/modules/base-list/machine";
 import machine, { actionTypes, serviceTypes, events } from "./machine";
 import PureBaseItem from "./Pure";
 

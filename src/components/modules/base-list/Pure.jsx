@@ -13,7 +13,7 @@ const {
   TableToolbarContent
 } = DataTable;
 
-import BaseItem from "@/components/presents/base-item";
+import BaseItem from "@/components/modules/base-item";
 
 export const PureBaseList = ({ modifier, bases, onCreateBase }) => {
   const views = {

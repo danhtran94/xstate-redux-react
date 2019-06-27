@@ -10,7 +10,7 @@ import { getSvc } from "@/helpers/machine";
 import { xstateMutations } from "@/resources/xstates";
 import { basesMutations } from "@/resources/bases";
 
-import { events as baseListEvents } from "@/components/presents/base-list/machine";
+import { events as baseListEvents } from "@/components/modules/base-list/machine";
 import machine, { events, actionTypes, serviceTypes } from "./machine";
 import PureBaseCreationForm from "./Pure";
 

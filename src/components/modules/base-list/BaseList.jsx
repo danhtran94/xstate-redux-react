@@ -11,7 +11,7 @@ import { xstateMutations } from "@/resources/xstates";
 import { basesMutations } from "@/resources/bases";
 import { syncSpawnedReduxActs } from "@/helpers/machine";
 
-import { events as creationEvents } from "@/components/presents/base-creation-form/machine";
+import { events as creationEvents } from "@/components/modules/base-creation-form/machine";
 import machine, {
   events,
   guardTypes,
