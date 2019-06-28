@@ -29,7 +29,7 @@ export const handler = ({ getState, dispatch }) =>
       }
     },
     actions: {
-      ...syncSpawnedReduxActs(),
+      ...syncSpawnedReduxActs(dispatch),
       [actionTypes.beginCreateBase]: send(creationEvents.RESTART, {
         to: () => getSvc(getState, "base-creation-form")
       })

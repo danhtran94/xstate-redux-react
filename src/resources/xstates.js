@@ -22,9 +22,9 @@ const mutations = {
     type: types.update,
     payload: { name, state }
   }),
-  regService: (handler, { parent, name, ref, watch = true }) => ({
+  regService: (handler, { parent, name, ref, watch = true, setSvc }) => ({
     type: types.register,
-    payload: { handler, parent, name, ref, watch }
+    payload: { handler, parent, name, ref, watch, setSvc }
   })
 };
 
@@ -69,7 +69,7 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
   return action => {
     const { type, payload } = action;
     if (type === types.register) {
-      const { handler, parent, name, ref, watch } = payload;
+      const { handler, parent, name, ref, watch, setSvc } = payload;
       const machine = handler({ dispatch, getState });
 
       if (!parent) {
@@ -92,8 +92,9 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
       target.send(
         createSpawnEvent(machine, {
           name,
-          ref
-          // watch
+          ref,
+          watch,
+          setSvc
         })
       );
 

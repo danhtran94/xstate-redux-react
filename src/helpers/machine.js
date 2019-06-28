@@ -1,6 +1,7 @@
 import { assign, spawn } from "xstate";
 import { useService } from "@xstate/react";
-import { mutations } from "@/resources/xstates";
+import { useRef, useState, useEffect } from "react";
+import { xstateMutations } from "@/resources/xstates";
 
 export const objNameCreator = machineName => ({
   State: name => `x/${machineName}/${name}`,
@@ -13,25 +14,16 @@ export const objNameCreator = machineName => ({
 
 const spawnEvent = "SPAWN_MACHINE";
 
-export const createSpawnEvent = (
-  machine,
-  {
-    name,
-    ref
-    // watch
-  }
-) => ({
+export const createSpawnEvent = (machine, { name, ref, watch, setSvc }) => ({
   type: spawnEvent,
   machine: machine,
   name: name,
-  refName: ref
-  // watch
+  refName: ref,
+  watch,
+  setSvc
 });
 
-export const spawnAndStore = [
-  "spawnMachine"
-  // "storeMachine"
-];
+export const spawnAndStore = ["spawnMachine", "storeMachine"];
 
 export const spawnEventLogic = {
   [spawnEvent]: {
@@ -41,32 +33,37 @@ export const spawnEventLogic = {
 
 export const syncSpawnedReduxActs = dispatch => ({
   spawnMachine: assign((ctx, evt) => {
-    console.log("spawning", evt.name);
     return {
-      [evt.refName]: spawn(evt.machine, { name: evt.name, sync: true })
+      [evt.refName]: spawn(evt.machine, {
+        name: evt.name,
+        sync: false
+      })
     };
-  })
-  // storeMachine: (ctx, evt) => {
-  //   if (evt.watch) {
-  //     // console.log("storing svc", evt.name);
-  //     // dispatch(
-  //     //   mutations.addService({
-  //     //     name: evt.name,
-  //     //     service: ctx[evt.refName]
-  //     //   })
-  //     // );
-  //     // ctx[evt.refName].onTransition(currentState => {
-  //     //   if (currentState.changed) {
-  //     //     dispatch(
-  //     //       mutations.update({
-  //     //         name: evt.name,
-  //     //         state: currentState
-  //     //       })
-  //     //     );
-  //     //   }
-  //     // });
-  //   }
-  // }
+  }),
+  storeMachine: (ctx, evt) => {
+    if (evt.setSvc) {
+      evt.setSvc(ctx[evt.refName]);
+    }
+    if (evt.watch) {
+      dispatch(
+        xstateMutations.addService({
+          name: evt.name,
+          service: ctx[evt.refName],
+          watch: true
+        })
+      );
+      ctx[evt.refName].onTransition(currentState => {
+        if (currentState.changed) {
+          dispatch(
+            xstateMutations.update({
+              name: evt.name,
+              state: currentState
+            })
+          );
+        }
+      });
+    }
+  }
 });
 
 export const getSvc = (fromState, name) => {
@@ -91,13 +88,40 @@ export const getState = (fromState, name) => fromState().xstates[name].state;
 export const useActor = (parentService, refSelector) => {
   const refs = refSelector.split(".");
   const [parent, parentSend] = useService(parentService);
+  const target = useRef();
 
-  const target = refs.reduce((parentSvc, ref) => {
-    return parentSvc.state.context[ref];
-  }, parentService);
-
-  if (target) {
-    return [target.state, target.send];
+  if (!target.current) {
+    target.current = refs.reduce((parentSvc, ref) => {
+      return parentSvc ? parentSvc.state.context[ref] : undefined;
+    }, parentService);
   }
+
+  if (target.current) {
+    return [target.current.state, target.current.send];
+  }
+
   return [parent, parentSend];
+};
+
+export const useChild = () => {
+  const [current, setCurrent] = useState(undefined);
+  const [svc, setSvc] = useState();
+  useEffect(() => {
+    if (svc) {
+      setCurrent(svc.state);
+
+      const listener = state => {
+        if (state.changed) {
+          setCurrent(state);
+        }
+      };
+
+      svc.onTransition(listener);
+
+      return () => {
+        svc.off(listener);
+      };
+    }
+  }, [svc]);
+  return [current, svc ? svc.send : undefined, setSvc];
 };

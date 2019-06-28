@@ -1,11 +1,12 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { sendParent } from "xstate";
+import { useService } from "@xstate/react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { compose } from "ramda";
 
 import { intercept } from "@/helpers/intercept";
-import { useActor } from "@/helpers/machine";
+import { useActor, useChild } from "@/helpers/machine";
 import { xstateMutations } from "@/resources/xstates";
 import { events as baseListEvents } from "@/components/modules/base-list/machine";
 import machine, { actionTypes, serviceTypes, events } from "./machine";
@@ -27,24 +28,27 @@ const handler = ({ getState, dispatch }) =>
   });
 
 export const CtrlBaseItem = ({ regService, base, idx }) => {
-  const parentService = useMemo(
+  const [current, send, setSvc] = useChild();
+  useMemo(
     () =>
       regService(handler, {
         parent: "base-list",
         name: `base-item-${idx}`,
-        ref: `baseItemRef${idx}`
+        ref: `baseItemRef${idx}`,
+        // watch: true,
+        setSvc
       }),
     []
   );
-  const [current, send] = useActor(parentService, `baseItemRef${idx}`);
+  // const [current, send] = useActor(parentService, `baseItemRef${idx}`);
 
-  return (
+  return current ? (
     <PureBaseItem
       modifier={current.value}
       base={base}
       onRemove={() => send(events.DELETE)}
     />
-  );
+  ) : null;
 };
 
 export default compose(

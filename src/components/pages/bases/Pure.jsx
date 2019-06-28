@@ -6,7 +6,7 @@ import BaseCreationForm from "@/components/modules/base-creation-form";
 
 const PurePageBases = ({ modifier }) => {
   const { data } = useCurrentRoute();
-  console.log("data", data);
+  // console.log("data", data);
 
   return (
     modifier && (
