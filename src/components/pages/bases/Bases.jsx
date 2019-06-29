@@ -13,7 +13,7 @@ import machine from "./machine";
 export const handler = ({ dispatch }) =>
   machine.withConfig({
     actions: {
-      ...syncSpawnedReduxActs()
+      ...syncSpawnedReduxActs(dispatch)
     }
   });
 

@@ -4,6 +4,7 @@ import { useService } from "@xstate/react";
 import { connect } from "react-redux";
 import { View } from "react-navi";
 
+import { InterceptProvider } from "@/helpers/intercept";
 import { syncSpawnedReduxActs } from "@/helpers/machine";
 import { xstateMutations } from "@/resources/xstates";
 
@@ -16,13 +17,32 @@ const handler = ({ dispatch }) =>
     }
   });
 
+const BaseCreate = props => {
+  console.log(props);
+  return <div>Popup creation module</div>;
+};
+
+const BaselistMock = props => {
+  console.log(props);
+  return <div>Base list module</div>;
+};
+
 const App = ({ regService }) => {
   const service = useMemo(() => regService(handler, { name: "app" }), []);
   const [current, send] = useService(service);
 
   return (
     <div className="app">
-      <View />
+      <InterceptProvider
+        registers={
+          {
+            // baseList: BaselistMock,
+            // baseCreationForm: BaseCreate
+          }
+        }
+      >
+        <View />
+      </InterceptProvider>
     </div>
   );
 };

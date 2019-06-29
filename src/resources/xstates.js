@@ -22,9 +22,9 @@ const mutations = {
     type: types.update,
     payload: { name, state }
   }),
-  regService: (handler, { parent, name, ref, watch = true, setSvc }) => ({
+  regService: (handler, { parent, name, ref, watch, svcSetter }) => ({
     type: types.register,
-    payload: { handler, parent, name, ref, watch, setSvc }
+    payload: { handler, parent, name, ref, watch, svcSetter }
   })
 };
 
@@ -69,7 +69,14 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
   return action => {
     const { type, payload } = action;
     if (type === types.register) {
-      const { handler, parent, name, ref, watch, setSvc } = payload;
+      const {
+        handler,
+        parent,
+        name,
+        ref,
+        watch = false,
+        svcSetter = () => {}
+      } = payload;
       const machine = handler({ dispatch, getState });
 
       if (!parent) {
@@ -79,11 +86,10 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
               dispatch(mutations.update({ name, state: mstate }));
             }
           })
-          .onDone(() => {
+          .onStop(() => {
             dispatch(mutations.remove({ name }));
           });
         dispatch(mutations.addService({ name, service, watch }));
-
         service.start();
         return service;
       }
@@ -94,11 +100,11 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
           name,
           ref,
           watch,
-          setSvc
+          svcSetter
         })
       );
 
-      return root;
+      return target;
     }
 
     return next(action);

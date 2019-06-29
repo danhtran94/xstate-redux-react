@@ -1,6 +1,6 @@
 import { assign, spawn } from "xstate";
 import { useService } from "@xstate/react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { xstateMutations } from "@/resources/xstates";
 
 export const objNameCreator = machineName => ({
@@ -14,13 +14,13 @@ export const objNameCreator = machineName => ({
 
 const spawnEvent = "SPAWN_MACHINE";
 
-export const createSpawnEvent = (machine, { name, ref, watch, setSvc }) => ({
+export const createSpawnEvent = (machine, { name, ref, watch, svcSetter }) => ({
   type: spawnEvent,
   machine: machine,
   name: name,
   refName: ref,
   watch,
-  setSvc
+  svcSetter
 });
 
 export const spawnAndStore = ["spawnMachine", "storeMachine"];
@@ -41,9 +41,8 @@ export const syncSpawnedReduxActs = dispatch => ({
     };
   }),
   storeMachine: (ctx, evt) => {
-    if (evt.setSvc) {
-      evt.setSvc(ctx[evt.refName]);
-    }
+    if (evt.svcSetter) evt.svcSetter(ctx[evt.refName]);
+
     if (evt.watch) {
       dispatch(
         xstateMutations.addService({
@@ -85,34 +84,23 @@ export const getNestedActor = (fromState, refSelector) => {
 };
 export const getState = (fromState, name) => fromState().xstates[name].state;
 
-export const useActor = (parentService, refSelector) => {
-  const refs = refSelector.split(".");
-  const [parent, parentSend] = useService(parentService);
-  const target = useRef();
+export const useActor = () => {
+  const [svcState, setSvcState] = useState(undefined);
 
-  if (!target.current) {
-    target.current = refs.reduce((parentSvc, ref) => {
-      return parentSvc ? parentSvc.state.context[ref] : undefined;
-    }, parentService);
-  }
+  const service = useRef(undefined);
+  const setService = svc => {
+    service.current = svc;
+  };
 
-  if (target.current) {
-    return [target.current.state, target.current.send];
-  }
-
-  return [parent, parentSend];
-};
-
-export const useChild = () => {
-  const [current, setCurrent] = useState(undefined);
-  const [svc, setSvc] = useState();
   useEffect(() => {
+    const svc = service.current;
+
     if (svc) {
-      setCurrent(svc.state);
+      setSvcState(svc.state);
 
       const listener = state => {
         if (state.changed) {
-          setCurrent(state);
+          setSvcState(state);
         }
       };
 
@@ -122,6 +110,7 @@ export const useChild = () => {
         svc.off(listener);
       };
     }
-  }, [svc]);
-  return [current, svc ? svc.send : undefined, setSvc];
+  }, [!!service.current]);
+
+  return [svcState, service.current, setService];
 };

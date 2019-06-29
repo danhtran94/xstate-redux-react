@@ -18,6 +18,7 @@ export function intercept(Component) {
     const intercepts = useContext(interceptRegistry);
     if (intercepts[name]) {
       console.info("# Intercepted", Component.displayName, "as", name);
+
       const InterceptedComponent = intercepts[name];
       return <InterceptedComponent {...prop} />;
     }

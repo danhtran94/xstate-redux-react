@@ -1,20 +1,22 @@
 import React from "react";
-import { compose, withView, mount, route } from "navi";
+import { compose, mount, redirect, withView, withTitle } from "navi";
 
-import LayoutDefault from "@/components/layouts/default";
+import AppLayout from "@/components/layouts/app";
+import PageLayout from "@/components/layouts/page";
+
 import PageBases from "@/components/pages/bases";
-import BaseList from "@/components/modules/base-list";
+
+const PageLayoutComp = <PageLayout />;
 
 const routes = compose(
-  withView(<LayoutDefault />),
+  withView(<AppLayout />),
   mount({
-    "/": route({
-      title: "Bases",
-      data: {
-        Section: <BaseList />
-      },
-      view: <PageBases />
-    })
+    "/": redirect("/bases"),
+    "/bases": compose(
+      withTitle("Bases"),
+      withView(PageLayoutComp),
+      withView(<PageBases />)
+    )
   })
 );
 

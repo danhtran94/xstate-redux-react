@@ -30,25 +30,27 @@ const handler = ({ getState, dispatch }) =>
     }
   });
 
-export const CtrlBaseCreationForm = ({ regService }) => {
-  const service = useMemo(
-    () =>
-      regService(handler, {
-        name: "base-creation-form"
-      }),
-    []
-  );
-  const [current, send] = useService(service);
+export const HocCtrlBaseCreationForm = PureView => {
+  return function CtrlBaseCreationForm({ regService }) {
+    const service = useMemo(
+      () =>
+        regService(handler, {
+          name: "base-creation-form"
+        }),
+      []
+    );
+    const [current, send] = useService(service);
 
-  return (
-    <PureBaseCreationForm
-      modifier={current.value}
-      onConfirm={() =>
-        send({ type: events.CONFIRM, data: { id: "from-creation-form" } })
-      }
-      onCancel={() => send({ type: events.CANCEL })}
-    />
-  );
+    return (
+      <PureView
+        modifier={current.value}
+        onConfirm={() =>
+          send({ type: events.CONFIRM, data: { id: "from-creation-form" } })
+        }
+        onCancel={() => send({ type: events.CANCEL })}
+      />
+    );
+  };
 };
 
 export default compose(
@@ -62,5 +64,6 @@ export default compose(
         },
         dispatch
       )
-  )
-)(CtrlBaseCreationForm);
+  ),
+  HocCtrlBaseCreationForm
+)(PureBaseCreationForm);

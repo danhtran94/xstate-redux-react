@@ -43,24 +43,25 @@ export const handler = ({ getState, dispatch }) =>
     }
   });
 
-export const CtrlBaseList = ({ regService, bases }) => {
-  const service = useMemo(
-    () =>
-      regService(handler, {
-        name: "base-list"
-      }),
-    []
-  );
-  const [current, send] = useService(service);
+export const HocCtrlBaseList = PureView =>
+  function CtrlBaseList({ regService, bases }) {
+    const service = useMemo(
+      () =>
+        regService(handler, {
+          name: "base-list"
+        }),
+      []
+    );
+    const [current, send] = useService(service);
 
-  return (
-    <PureBaseList
-      modifier={current.value}
-      bases={bases}
-      onCreateBase={() => send(events.CREATE_BASE)}
-    />
-  );
-};
+    return (
+      <PureView
+        modifier={current.value}
+        bases={bases}
+        onCreateBase={() => send(events.CREATE_BASE)}
+      />
+    );
+  };
 
 export default compose(
   intercept,
@@ -75,5 +76,6 @@ export default compose(
         },
         dispatch
       )
-  )
-)(CtrlBaseList);
+  ),
+  HocCtrlBaseList
+)(PureBaseList);
