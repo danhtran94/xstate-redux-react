@@ -2,7 +2,6 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { VueLoaderPlugin } = require("vue-loader");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
@@ -64,27 +63,25 @@ module.exports = {
   },
   mode: isProd ? "production" : ENV,
   performance: {
-    // maxEntrypointSize: 1024000,
-    // maxAssetSize: 1024000
+    maxEntrypointSize: 2 * 1000 * 1024,
+    maxAssetSize: 1 * 1000 * 1024
   },
   optimization: {
-    // namedModules: true,
-    // providedExports: true,
-    // usedExports: true,
     minimize: isProd,
-    // runtimeChunk: "single",
-    // splitChunks: {
-    //   cacheGroups: {
-    //     vendor: {
-    //       test: /[\\/]node_modules[\\/]/,
-    //       name: "vendors",
-    //       chunks: "all"
-    //     }
-    //   }
-    // },
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    },
     minimizer: [
       new TerserWebpackPlugin({
-        sourceMap: !isProd, // Must be set to true if using source-maps in production | disable it if you don't have enough RAM
+        cache: true,
+        parallel: true,
+        sourceMap: true, // Must be set to true if using source-maps in production | disable it if you don't have enough RAM
         terserOptions: {
           compress: {
             drop_console: isProd
@@ -113,10 +110,6 @@ module.exports = {
         loader: "babel-loader",
         sideEffects: false,
         exclude: /node_modules/
-      },
-      {
-        test: /\.vue$/,
-        use: "vue-loader"
       },
       {
         test: /\.comp\.s?css$/,
@@ -159,16 +152,24 @@ module.exports = {
       "process.env.NODE_ENV": JSON.stringify(ENV)
     }),
     new MiniCSSExtractPlugin({
-      filename: "[name].[contenthash:5].css"
-      // chunkFilename: "[name]-[id].[contenthash:5].css"
+      filename: "[name].[contenthash:5].css",
+      chunkFilename: "[name].[contenthash:5].css"
     }),
-    new VueLoaderPlugin(),
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, "src", "static"),
         ignore: [".*"]
       }
     ]),
+    ...(isProd
+      ? [
+          new webpack.SourceMapDevToolPlugin({
+            publicPath: "https://localhost:8080/",
+            filename: "sourcemaps/[file].map",
+            exclude: [/vendor.*.js/]
+          })
+        ]
+      : []),
     ...(["development", "production"].includes(ENV)
       ? [
           new HTMLWebpackPlugin({
@@ -178,7 +179,7 @@ module.exports = {
         ]
       : [])
   ],
-  devtool: isProd ? "source-map" : "cheap-module-eval-source-map",
+  devtool: isProd ? false : "cheap-module-eval-source-map",
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),
     hot: true,

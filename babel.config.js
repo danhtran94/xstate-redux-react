@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 module.exports = {
   presets: [
     [
@@ -6,7 +7,7 @@ module.exports = {
         targets: {
           esmodules: true // target browsers supporting ES Modules
         },
-        modules: false, // true for transformation of ES6 module syntax to another module type, in this case no rollup like es6 modules
+        modules: false, // true for transformation of ES6 module syntax to another module type
         loose: true, // true mean not strict to es5
         useBuiltIns: "usage", // imports for polyfills when they are used in each file
         corejs: 3

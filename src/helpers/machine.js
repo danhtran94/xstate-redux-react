@@ -1,6 +1,6 @@
 import { assign, spawn } from "xstate";
-import { useService } from "@xstate/react";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
+
 import { xstateMutations } from "@/resources/xstates";
 
 export const objNameCreator = machineName => ({
