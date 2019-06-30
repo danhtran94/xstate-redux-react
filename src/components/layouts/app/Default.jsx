@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-navi";
 
-const LayoutDefaultApp = () => {
+const LayoutAppDefault = () => {
   return (
     <div className="layout-default-app">
       <div className="environment-label" />
@@ -10,4 +10,4 @@ const LayoutDefaultApp = () => {
   );
 };
 
-export default LayoutDefaultApp;
+export default LayoutAppDefault;

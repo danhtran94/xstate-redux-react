@@ -6,7 +6,7 @@ import {
   Content
 } from "carbon-components-react/lib/components/UIShell";
 
-const LayoutDefaultPage = () => {
+const LayoutPageDefault = () => {
   return (
     <div className="layout-default-page">
       <Header aria-label="IBM Platform Name">
@@ -21,4 +21,4 @@ const LayoutDefaultPage = () => {
   );
 };
 
-export default LayoutDefaultPage;
+export default LayoutPageDefault;
