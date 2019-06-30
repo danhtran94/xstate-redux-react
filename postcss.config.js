@@ -1,4 +1,4 @@
-/* eslint "import/no-extraneous-dependencies": off */
+/* eslint-disable */
 const AutoPrefixerPlugin = require("autoprefixer");
 const CSSNano = require("cssnano")({
   preset: "default"
