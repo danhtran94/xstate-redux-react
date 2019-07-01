@@ -19,6 +19,7 @@ module.exports = {
   ],
   plugins: [
     // ["@babel/transform-react-jsx", { pragma: "h" }], // preact
+    ["import", { libraryName: "antd", libraryDirectory: "es", style: "css" }],
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-object-rest-spread",

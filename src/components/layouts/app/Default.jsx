@@ -1,10 +1,11 @@
 import React from "react";
+import { Alert } from "antd";
 import { View } from "react-navi";
 
 const LayoutAppDefault = () => {
   return (
-    <div className="layout-default-app">
-      <div className="environment-label" />
+    <div className="layout-app">
+      <Alert message="Development Environment" banner />
       <View />
     </div>
   );

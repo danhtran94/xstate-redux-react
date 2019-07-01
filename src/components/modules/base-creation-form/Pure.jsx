@@ -1,7 +1,7 @@
 import React from "react";
 import { states } from "./machine";
 
-import { Modal } from "carbon-components-react";
+import { Modal } from "antd";
 
 const PureBaseCreationForm = ({ modifier, onConfirm, onCancel }) => {
   const views = {
@@ -9,14 +9,15 @@ const PureBaseCreationForm = ({ modifier, onConfirm, onCancel }) => {
     [states.ERROR]: <div>Creating error.</div>,
     [states.INIT]: (
       <Modal
-        modalHeading="Create new base"
-        primaryButtonText="Create"
-        secondaryButtonText="Cancel"
-        open={true}
-        onRequestClose={onCancel}
-        onRequestSubmit={onConfirm}
-        onSecondarySubmit={onCancel}
-      />
+        title="Create new base"
+        visible={true}
+        onOk={onConfirm}
+        onCancel={onCancel}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
     ),
     [states.INVALID]: <div>Invalid.</div>,
     [states.CREATING]: <div>Requesting.</div>,

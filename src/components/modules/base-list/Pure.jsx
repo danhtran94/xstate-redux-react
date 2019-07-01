@@ -1,86 +1,71 @@
 import React from "react";
-import { states } from "./machine";
+import { Button, Table, Divider } from "antd";
 
-import { DataTable, Button } from "carbon-components-react";
-const {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableHeader,
-  TableToolbar,
-  TableToolbarContent
-} = DataTable;
-
-import BaseItem from "@/components/modules/base-item";
-
-export const PureBaseList = ({ modifier, bases, onCreateBase }) => {
-  const views = {
-    [states.EMPTY]: (
-      <Button onClick={onCreateBase} kind="primary">
+export const PureBaseList = ({
+  empty,
+  error,
+  loading,
+  bases,
+  onCreateBase
+}) => {
+  if (empty) {
+    return (
+      <Button
+        icon="plus"
+        type="primary"
+        // size="large"
+        onClick={onCreateBase}
+      >
         Create first base
       </Button>
-    ),
-    [states.ERROR]: <div>Error while fetching bases.</div>,
-    [states.INIT]: <div>Waiting to validating.</div>,
-    [states.LOADING]: <div>Loading...</div>,
-    [states.SUCCESS]: (
-      <div>
-        <DataTable
-          rows={bases}
-          headers={[
-            {
-              key: "id",
-              header: "id"
-            },
-            {
-              key: "name",
-              header: "name"
-            },
-            {
-              key: "date",
-              header: "date"
-            }
-          ]}
-          render={({ rows, headers, getHeaderProps }) => (
-            <TableContainer title="Bases">
-              <TableToolbar>
-                <TableToolbarContent>
-                  <Button onClick={onCreateBase} size="small" kind="primary">
-                    Create More
-                  </Button>
-                </TableToolbarContent>
-              </TableToolbar>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    {headers.map((header, idx) => (
-                      <TableHeader key={idx} {...getHeaderProps({ header })}>
-                        {header.header}
-                      </TableHeader>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((base, idx) => (
-                    <BaseItem
-                      name={`baseItem${idx}`}
-                      key={idx}
-                      idx={idx}
-                      base={base}
-                    />
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        />
-      </div>
-    )
-  };
+    );
+  }
 
-  return views[modifier];
+  if (error) {
+    return <div>Error while fetching bases.</div>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "id",
+      key: "id",
+      // eslint-disable-next-line react/display-name
+      render: text => <a href="javascript:;">{text}</a>
+    },
+    {
+      title: "Action",
+      key: "action",
+      // eslint-disable-next-line react/display-name
+      render: (text, record) => (
+        <span>
+          <a href="javascript:;">View</a>
+          <Divider type="vertical" />
+          <a href="javascript:;">Delete</a>
+        </span>
+      )
+    }
+  ];
+
+  return (
+    <div>
+      <Button
+        style={{
+          marginBottom: "1.5rem"
+        }}
+        type="primary"
+        icon="plus"
+        onClick={onCreateBase}
+      >
+        Create new
+      </Button>
+      <Table columns={columns} dataSource={bases} />
+    </div>
+  );
 };
 
 export default PureBaseList;

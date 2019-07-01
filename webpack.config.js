@@ -179,6 +179,7 @@ module.exports = {
         ]
       : [])
   ],
+  stats: { children: false, modules: false },
   devtool: isProd ? false : "cheap-module-eval-source-map",
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),

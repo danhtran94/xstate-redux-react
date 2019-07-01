@@ -31,9 +31,9 @@ export const serviceTypes = {
 export const states = {
   INIT: name.State("INIT"),
   EMPTY: name.State("EMPTY"),
-  NEW: name.State("NEW"),
   LOADING: name.State("LOADING"),
   SUCCESS: name.State("SUCCESS"),
+  NORMAL: name.State("NORMAL"),
   ERROR: name.State("ERROR")
 };
 
@@ -66,23 +66,30 @@ export default Machine({
         ...spawnEventLogic,
         [events.CREATE_BASE]: {
           actions: [actionTypes.beginCreateBase]
-        },
-        [events.REMOVE_BASE]: {
-          actions: [actionTypes.beginCreateBase]
-        },
-        "": {
-          cond: { type: guardTypes.shouldCreateNew },
-          target: states.EMPTY
         }
-      }
-    },
-    [states.EMPTY]: {
-      on: {
-        [events.ADDED_BASE]: {
-          target: states.SUCCESS
+      },
+      initial: states.NORMAL,
+      states: {
+        [states.NORMAL]: {
+          on: {
+            "": {
+              cond: { type: guardTypes.shouldCreateNew },
+              target: states.EMPTY
+            },
+            [events.REMOVE_BASE]: {
+              actions: [actionTypes.beginCreateBase]
+            }
+          }
         },
-        [events.CREATE_BASE]: {
-          actions: [actionTypes.beginCreateBase]
+        [states.EMPTY]: {
+          on: {
+            [events.ADDED_BASE]: {
+              target: states.NORMAL
+            }
+            // [events.CREATE_BASE]: {
+            //   actions: [actionTypes.beginCreateBase]
+            // }
+          }
         }
       }
     }

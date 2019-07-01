@@ -2,15 +2,21 @@
   box-sizing: border-box;
 }
 
+body,
+#root,
 .app {
-  height: calc(100vh - 3rem);
-}
-
-.layout-default-app {
   height: 100%;
 }
 
-.layout-default-page {
+.layout-app {
+  height: 100%;
+}
+
+.layout-page {
+  height: calc(100% - 37px);
+}
+
+.layout-page > .ant-layout {
   height: 100%;
 }
 

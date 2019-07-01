@@ -13,6 +13,7 @@ import { syncSpawnedReduxActs } from "@/helpers/machine";
 
 import { events as creationEvents } from "@/components/modules/base-creation-form/machine";
 import machine, {
+  states,
   events,
   guardTypes,
   actionTypes,
@@ -56,7 +57,9 @@ export const HocCtrlBaseList = PureView =>
 
     return (
       <PureView
-        modifier={current.value}
+        empty={current.matches({ [states.SUCCESS]: states.EMPTY })}
+        error={current.matches(states.ERROR)}
+        loading={current.matches(states.LOADING)}
         bases={bases}
         onCreateBase={() => send(events.CREATE_BASE)}
       />
