@@ -19,3 +19,12 @@ export {
 export {
   default as PlusOutline
 } from "@ant-design/icons/lib/outline/PlusOutline";
+export {
+  default as LeftOutline
+} from "@ant-design/icons/lib/outline/LeftOutline";
+export {
+  default as RightOutline
+} from "@ant-design/icons/lib/outline/RightOutline";
+export {
+  default as ExclamationCircleFill
+} from "@ant-design/icons/lib/fill/ExclamationCircleFill";

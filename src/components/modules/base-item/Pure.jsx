@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Icon, Avatar } from "antd";
+import { Card, Icon } from "antd";
 const { Meta } = Card;
 
 const PureBaseItem = ({ modifier, base, onRemove }) => {
