@@ -17,15 +17,15 @@ const handler = ({ dispatch }) =>
     }
   });
 
-const BaseCreate = props => {
-  console.log(props);
-  return <div>Popup creation module</div>;
-};
+// const BaseCreate = props => {
+//   console.log(props);
+//   return <div>Popup creation module</div>;
+// };
 
-const BaselistMock = props => {
-  console.log(props);
-  return <div>Base list module</div>;
-};
+// const BaselistMock = props => {
+//   console.log(props);
+//   return <div>Base list module</div>;
+// };
 
 const App = ({ regService }) => {
   const service = useMemo(() => regService(handler, { name: "app" }), []);

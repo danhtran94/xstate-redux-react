@@ -93,6 +93,11 @@ module.exports = {
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
     alias: {
+      // tree-shaking ant-icons
+      "@ant-design/icons/lib/dist$": path.resolve(
+        __dirname,
+        "src/components/units/Icons.jsx"
+      ),
       src: path.resolve(__dirname, "src"),
       "@": path.resolve(__dirname, "src"),
       ...(isProd
@@ -170,7 +175,7 @@ module.exports = {
           })
         ]
       : []),
-    ...(["development", "production"].includes(ENV)
+    ...(ENV !== "test"
       ? [
           new HTMLWebpackPlugin({
             template: path.resolve(__dirname, "src", "index.html"),

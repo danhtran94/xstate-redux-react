@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { compose } from "ramda";
 
 import { intercept } from "@/helpers/intercept";
-import { useChild, useActor } from "@/helpers/machine";
+import { useActor } from "@/helpers/machine";
 import { xstateMutations } from "@/resources/xstates";
 import { events as baseListEvents } from "@/components/modules/base-list/machine";
 import machine, { actionTypes, serviceTypes, events } from "./machine";

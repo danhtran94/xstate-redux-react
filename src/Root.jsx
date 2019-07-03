@@ -6,7 +6,7 @@ import store from "@/resources/index";
 import routes from "@/routes/index";
 
 import App from "@/components/App";
-import "./style.scss";
+import "@/assets/style.scss";
 
 const Root = () => {
   return (
