@@ -9,6 +9,7 @@ const TerserWebpackPlugin = require("terser-webpack-plugin");
 
 const PUBLIC_PATH = process.env.PUBLIC_PATH ? process.env.PUBLIC_PATH : "/";
 const ENV = process.env.NODE_ENV ? process.env.NODE_ENV : "development";
+const hashLength = 5;
 
 // console.log(`Running in ${ENV} !`);
 const isProd = ENV === "production";
@@ -30,8 +31,8 @@ function cssLoaders(isModule) {
           ? {
               modules: true,
               localIdentName: isProd
-                ? "[hash:base64:5]"
-                : "[name]__[local]___[hash:base64:5]"
+                ? `[hash:base64:${hashLength}]`
+                : `[name]__[local]___[hash:base64:${hashLength}]`
             }
           : {}),
         importLoaders: 2
@@ -58,8 +59,8 @@ module.exports = {
   output: {
     publicPath: PUBLIC_PATH,
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].[hash:5].js",
-    chunkFilename: "[name].[chunkhash:5].js"
+    filename: `[name].[hash:${hashLength}].js`,
+    chunkFilename: `[name].[chunkhash:${hashLength}].js`
   },
   mode: isProd ? "production" : ENV,
   performance: {
@@ -157,8 +158,8 @@ module.exports = {
       "process.env.NODE_ENV": JSON.stringify(ENV)
     }),
     new MiniCSSExtractPlugin({
-      filename: "[name].[contenthash:5].css",
-      chunkFilename: "[name].[contenthash:5].css"
+      filename: `[name].[contenthash:${hashLength}].css`,
+      chunkFilename: `[name].[contenthash:${hashLength}].css`
     }),
     new CopyWebpackPlugin([
       {
@@ -169,7 +170,7 @@ module.exports = {
     ...(isProd
       ? [
           new webpack.SourceMapDevToolPlugin({
-            publicPath: "https://localhost:8080/",
+            publicPath: "http://localhost:8080/",
             filename: "sourcemaps/[file].map",
             exclude: [/vendor.*.js/]
           })
