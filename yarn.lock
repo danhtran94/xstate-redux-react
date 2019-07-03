@@ -1035,10 +1035,10 @@
     "@webassemblyjs/wast-parser" "1.8.5"
     "@xtuc/long" "4.2.2"
 
-"@xstate/react@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@xstate/react/-/react-0.6.1.tgz#860ed8fe628fac2b32b621f750dbf54835777785"
-  integrity sha512-EGwTXpYMthQAv1pX1aTWsRhWFl3KDvUAGDwHcZFXYmUfrsf4pcgXaDOVCi78E7Gak03MkBWG52H4QgSGZbdMSg==
+"@xstate/react@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@xstate/react/-/react-0.7.0.tgz#946986a65da73f41faaf9cfa7748dff761e1acd1"
+  integrity sha512-1ZWG/rpmA3AgtrRu9Zqz6hOF1av+McffC+LLQjESyrFYawz9pFlFB6+DqJgcID9NPnjl+S9PGzfAVpa9P02QTw==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
