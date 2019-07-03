@@ -12,14 +12,11 @@ const PureBaseCreationForm = ({
     return <div>Creating error.</div>;
   }
 
-  if (creating) {
-    return <div>Requesting.</div>;
-  }
-
   return (
     <Modal
       title="Create new base"
       visible={showModal}
+      confirmLoading={creating}
       onOk={onConfirm}
       onCancel={onCancel}
     >
