@@ -66,7 +66,7 @@ export const syncSpawnedReduxActs = dispatch => ({
 });
 
 export const getSvc = (fromState, name) => {
-  console.log("get", name, "svc from store");
+  // console.log("get", name, "svc from store");
   return fromState().xstates[name].service;
 };
 /**
@@ -75,9 +75,9 @@ export const getSvc = (fromState, name) => {
 export const getNestedActor = (fromState, refSelector) => {
   const [root, ...refs] = refSelector.split(".");
   const rootSvc = getSvc(fromState, root);
-  console.log("getting actor refs", refs, "from", root);
+  // console.log("getting actor refs", refs, "from", root);
   const targetSvc = refs.reduce((parentSvc, ref) => {
-    console.log("get", ref, "actor");
+    // console.log("get", ref, "actor");
     return parentSvc.state.context[ref];
   }, rootSvc);
   return [rootSvc, targetSvc];

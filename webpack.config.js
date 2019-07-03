@@ -174,7 +174,11 @@ module.exports = {
             exclude: [/vendor.*.js/]
           })
         ]
-      : []),
+      : [
+          new webpack.HotModuleReplacementPlugin({
+            // Options...
+          })
+        ]),
     ...(ENV !== "test"
       ? [
           new HTMLWebpackPlugin({
