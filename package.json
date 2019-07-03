@@ -1,5 +1,5 @@
 {
-  "name": "webpack-4-react",
+  "name": "xstate-redux-react",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -8,8 +8,7 @@
     "analyze": "yarn stats && webpack-bundle-analyzer dist/stats.json",
     "build": "rm -rf dist && NODE_ENV=production webpack --progress",
     "build:dev": "rm -rf dist && NODE_ENV=development webpack --progress",
-    "dev": "NODE_ENV=development webpack-dev-server --port 3000",
-    "ant-icons": "node tools/export-icons.js"
+    "dev": "NODE_ENV=development webpack-dev-server --port 3000"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
