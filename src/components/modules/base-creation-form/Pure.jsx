@@ -21,8 +21,6 @@ const PureBaseCreationForm = ({
       onCancel={onCancel}
     >
       <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
     </Modal>
   );
 };

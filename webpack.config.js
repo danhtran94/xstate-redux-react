@@ -189,16 +189,11 @@ module.exports = {
         ]
       : [])
   ],
-  stats: { children: false, modules: false, entrypoints: false },
   devtool: isProd ? false : "cheap-module-eval-source-map",
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),
     hot: true,
-    historyApiFallback: true, // single-page application
-    stats: {
-      modules: false,
-      children: false,
-      entrypoints: false
-    }
-  }
+    historyApiFallback: true // single-page application
+  },
+  stats: { children: false, modules: false, entrypoints: false }
 };
