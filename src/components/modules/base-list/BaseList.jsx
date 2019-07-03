@@ -21,18 +21,18 @@ import machine, {
 } from "./machine";
 import PureBaseList from "./Pure";
 
-export const handler = ({ getState, dispatch }) =>
+export const handler = ({ getState: state, dispatch }) =>
   machine.withConfig({
     guards: {
       [guardTypes.shouldCreateNew]() {
-        const { bases } = getState();
+        const { bases } = state();
         return bases.length === 0;
       }
     },
     actions: {
       ...syncSpawnedReduxActs(dispatch),
       [actionTypes.beginCreateBase]: send(creationEvents.RESTART, {
-        to: () => getSvc(getState, "base-creation-form")
+        to: () => getSvc(state, "base-creation-form")
       })
     },
     services: {

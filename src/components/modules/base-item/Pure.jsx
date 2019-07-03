@@ -1,15 +1,19 @@
 import React from "react";
-
-import { DataTable } from "carbon-components-react";
-const { TableRow, TableCell } = DataTable;
+import { Card, Icon, Avatar } from "antd";
+const { Meta } = Card;
 
 const PureBaseItem = ({ modifier, base, onRemove }) => {
   return (
-    <TableRow>
-      <TableCell>{base.id}</TableCell>
-      <TableCell />
-      <TableCell />
-    </TableRow>
+    <Card
+      style={{ width: "100%" }}
+      actions={[
+        <Icon key="setting" type="setting" />,
+        <Icon key="edit" type="edit" />,
+        <Icon key="ellipsis" type="ellipsis" />
+      ]}
+    >
+      <Meta title={base.id} description="This is the description" />
+    </Card>
   );
 };
 

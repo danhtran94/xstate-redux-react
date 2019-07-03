@@ -6,7 +6,7 @@ const LayoutAppDefault = () => {
   return (
     <div className="layout-app">
       <Alert message="Development Environment" banner />
-      <View />
+       <View />
     </div>
   );
 };

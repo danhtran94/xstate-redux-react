@@ -13,7 +13,12 @@ export const InterceptProvider = ({ registers, children }) => {
 export function intercept(Component) {
   return function WrappedWithIntercept({ name = "", ...prop }) {
     if (name === "")
-      console.warn(Component.displayName, "using intercept without name!");
+      console.warn(
+        Component.displayName,
+        "props",
+        prop,
+        "using intercept without name!"
+      );
 
     const intercepts = useContext(interceptRegistry);
     if (intercepts[name]) {

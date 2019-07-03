@@ -1,5 +1,8 @@
 import React from "react";
-import { Button, Table, Divider } from "antd";
+import { Button, Row, Col } from "antd";
+import { groupBy, values, addIndex, map } from "ramda";
+
+import BaseItem from "@/components/modules/base-item";
 
 export const PureBaseList = ({
   empty,
@@ -10,12 +13,7 @@ export const PureBaseList = ({
 }) => {
   if (empty) {
     return (
-      <Button
-        icon="plus"
-        type="primary"
-        // size="large"
-        onClick={onCreateBase}
-      >
+      <Button icon="plus" type="primary" onClick={onCreateBase}>
         Create first base
       </Button>
     );
@@ -29,27 +27,9 @@ export const PureBaseList = ({
     return <div>Loading...</div>;
   }
 
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "id",
-      key: "id",
-      // eslint-disable-next-line react/display-name
-      render: text => <a href="javascript:;">{text}</a>
-    },
-    {
-      title: "Action",
-      key: "action",
-      // eslint-disable-next-line react/display-name
-      render: (text, record) => (
-        <span>
-          <a href="javascript:;">View</a>
-          <Divider type="vertical" />
-          <a href="javascript:;">Delete</a>
-        </span>
-      )
-    }
-  ];
+  const mapIndexed = addIndex(map);
+  const basesWithIdx = mapIndexed((base, idx) => ({ base: base, idx }), bases);
+  const grouped4Bases = groupBy(({ idx }) => Math.floor(idx / 4), basesWithIdx);
 
   return (
     <div>
@@ -63,7 +43,15 @@ export const PureBaseList = ({
       >
         Create new
       </Button>
-      <Table columns={columns} dataSource={bases} />
+      {values(grouped4Bases).map((row, rowIdx) => (
+        <Row key={rowIdx} style={{ marginBottom: "1.5rem" }} gutter={16}>
+          {row.map(({ base }, colIdx) => (
+            <Col key={colIdx} span={6}>
+              <BaseItem name={`baseItem${rowIdx}${colIdx}`} base={base} />
+            </Col>
+          ))}
+        </Row>
+      ))}
     </div>
   );
 };

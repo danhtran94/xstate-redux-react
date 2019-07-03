@@ -6,8 +6,6 @@ import store from "@/resources/index";
 import routes from "@/routes/index";
 
 import App from "@/components/App";
-
-import "carbon-components/css/carbon-components.css";
 import "./style.scss";
 
 const Root = () => {

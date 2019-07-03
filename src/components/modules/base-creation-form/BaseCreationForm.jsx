@@ -11,7 +11,7 @@ import { xstateMutations } from "@/resources/xstates";
 import { basesMutations } from "@/resources/bases";
 
 import { events as baseListEvents } from "@/components/modules/base-list/machine";
-import machine, { events, actionTypes, serviceTypes } from "./machine";
+import machine, { states, events, actionTypes, serviceTypes } from "./machine";
 import PureBaseCreationForm from "./Pure";
 
 const handler = ({ getState, dispatch }) =>
@@ -43,6 +43,9 @@ export const HocCtrlBaseCreationForm = PureView => {
 
     return (
       <PureView
+        showModal={current.matches(states.INIT)}
+        creating={current.matches(states.CREATING)}
+        error={current.matches(states.ERROR)}
         modifier={current.value}
         onConfirm={() =>
           send({ type: events.CONFIRM, data: { id: "from-creation-form" } })
