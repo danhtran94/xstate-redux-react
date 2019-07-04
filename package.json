@@ -7,6 +7,7 @@
     "stats": "NODE_ENV=production webpack --profile --json > dist/stats.json",
     "analyze": "yarn stats && webpack-bundle-analyzer dist/stats.json",
     "build": "rm -rf dist && NODE_ENV=production webpack --progress",
+    "now-build": "rm -rf dist && NODE_ENV=development webpack --progress",
     "build:dev": "rm -rf dist && NODE_ENV=development webpack --progress",
     "dev": "NODE_ENV=development webpack-dev-server --port 3000"
   },

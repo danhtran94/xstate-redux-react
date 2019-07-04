@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "name": "xstate-redux-react",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/index.html",
+      "headers": { "cache-control": "s-maxage=0" },
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "headers": { "cache-control": "s-maxage=0" },
+      "dest": "/$1"
+    }
+  ]
+}
