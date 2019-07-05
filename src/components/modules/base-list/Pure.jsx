@@ -47,7 +47,11 @@ export const PureBaseList = ({
         <Row key={rowIdx} style={{ marginBottom: "1.5rem" }} gutter={16}>
           {row.map(({ base }, colIdx) => (
             <Col key={colIdx} span={6}>
-              <BaseItem name={`baseItem${rowIdx}${colIdx}`} base={base} />
+              <BaseItem
+                name={`baseItem${rowIdx}${colIdx}`}
+                base={base}
+                idx={`${rowIdx}${colIdx}`}
+              />
             </Col>
           ))}
         </Row>

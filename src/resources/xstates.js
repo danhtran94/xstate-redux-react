@@ -77,9 +77,15 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
         watch = false,
         svcSetter = () => {}
       } = payload;
+      const { xstates } = getState();
       const machine = handler({ dispatch, getState });
 
       if (!parent) {
+        const isExist = !!xstates[name];
+        if (isExist) {
+          return xstates[name].service;
+        }
+
         const service = interpret(machine)
           .onTransition(mstate => {
             if (mstate.changed && watch) {
@@ -95,6 +101,11 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
       }
 
       const [root, target] = getNestedActor(getState, parent);
+      const isExist = !!target.children.get(name);
+      if (isExist) {
+        return target;
+      }
+
       target.send(
         createSpawnEvent(machine, {
           name,

@@ -114,6 +114,9 @@ module.exports = {
       {
         test: /\.[t|j]sx?$/,
         loader: "babel-loader",
+        options: {
+          cacheDirectory: true
+        },
         sideEffects: false,
         exclude: /node_modules/
       },
