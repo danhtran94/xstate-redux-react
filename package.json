@@ -46,6 +46,9 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "@emotion/babel-preset-css-prop": "^10.0.14",
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14",
     "@hot-loader/react-dom": "^16.8.6",
     "@xstate/react": "^0.7.0",
     "antd": "^3.20.0",

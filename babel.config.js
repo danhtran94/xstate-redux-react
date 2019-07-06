@@ -15,15 +15,22 @@ module.exports = {
     ],
     // ["@babel/typescript", { jsxPragma: "h" }] // preact
     "@babel/preset-typescript",
-    "@babel/preset-react"
+    "@babel/preset-react",
+    [
+      "@emotion/babel-preset-css-prop",
+      {
+        autoLabel: true,
+        labelFormat: "[local]"
+      }
+    ]
   ],
   plugins: [
     // ["@babel/transform-react-jsx", { pragma: "h" }], // preact
-    "react-hot-loader/babel",
-    ["import", { libraryName: "antd", libraryDirectory: "es", style: "css" }],
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-object-rest-spread",
-    "@babel/plugin-proposal-optional-chaining"
+    "@babel/plugin-proposal-optional-chaining",
+    "react-hot-loader/babel",
+    ["import", { libraryName: "antd", libraryDirectory: "es", style: "css" }]
   ]
 };

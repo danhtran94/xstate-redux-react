@@ -6,7 +6,7 @@ const types = {
   add: "xstate/ADD",
   update: "xstate/UPDATE",
   register: "xstate/REGISTER",
-  remove: "xstate/REGISTER"
+  remove: "xstate/REMOVE"
 };
 
 const mutations = {

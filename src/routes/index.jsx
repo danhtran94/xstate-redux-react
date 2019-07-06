@@ -1,25 +1,28 @@
 import React from "react";
 import { compose, mount, redirect, withView, withTitle } from "navi";
 
-import AppLayout from "@/components/layouts/app";
-import PageLayout from "@/components/layouts/page";
+import LayoutApp from "@/components/layouts/App";
+import LayoutCommonPage from "@/components/layouts/CommonPage";
+import LayoutLoginPage from "@/components/layouts/LoginPage";
 
+import PageLogin from "@/components/pages/login";
 import PageBases from "@/components/pages/bases";
 
-const PageLayoutComp = <PageLayout />;
+import SharedFooter from "@/components/pages/shared/Footer";
 
+const SharedFooterComp = <SharedFooter />;
 const routes = compose(
-  withView(<AppLayout />),
+  withView(<LayoutApp />),
   mount({
     "/": redirect("/login"),
     "/login": compose(
       withTitle("Hello my friend, please login ..."),
-      withView(PageLayoutComp),
-      withView(<PageBases />)
+      withView(<LayoutLoginPage footer={SharedFooterComp} />),
+      withView(<PageLogin />)
     ),
     "/bases": compose(
-      withTitle("Bases"),
-      withView(PageLayoutComp),
+      withTitle("All your bases"),
+      withView(<LayoutCommonPage footer={SharedFooterComp} />),
       withView(<PageBases />)
     )
   })

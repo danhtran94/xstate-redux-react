@@ -5,7 +5,7 @@ import { Layout, Menu, Breadcrumb, Icon } from "antd";
 const { Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const LayoutPageDefault = () => {
+const LayoutCommonPage = ({ footer }) => {
   const [collapsed, setCollapsed] = useState(false);
   const onCollapse = collapsed => {
     setCollapsed(collapsed);
@@ -48,12 +48,10 @@ const LayoutPageDefault = () => {
             <View />
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          UI v3.x.x - Engine v3.x.x
-        </Footer>
+        {footer}
       </Layout>
     </Layout>
   );
 };
 
-export default LayoutPageDefault;
+export default LayoutCommonPage;

@@ -2,7 +2,7 @@ import React from "react";
 import { Alert } from "antd";
 import { View } from "react-navi";
 
-const LayoutAppDefault = () => {
+const LayoutApp = () => {
   return (
     <div className="layout-app">
       <Alert message="Development Environment" banner />
@@ -11,4 +11,4 @@ const LayoutAppDefault = () => {
   );
 };
 
-export default LayoutAppDefault;
+export default LayoutApp;

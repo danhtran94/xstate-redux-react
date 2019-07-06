@@ -28,3 +28,6 @@ export {
 export {
   default as ExclamationCircleFill
 } from "@ant-design/icons/lib/fill/ExclamationCircleFill";
+export {
+  default as LoadingOutline
+} from "@ant-design/icons/lib/outline/LoadingOutline";
