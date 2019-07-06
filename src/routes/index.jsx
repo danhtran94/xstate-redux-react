@@ -16,7 +16,7 @@ const routes = compose(
   mount({
     "/": redirect("/login"),
     "/login": compose(
-      withTitle("Hello my friend, please login ..."),
+      withTitle("Hello my friend, please login..."),
       withView(<LayoutLoginPage footer={SharedFooterComp} />),
       withView(<PageLogin />)
     ),
