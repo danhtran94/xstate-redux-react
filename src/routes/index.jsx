@@ -11,7 +11,12 @@ const PageLayoutComp = <PageLayout />;
 const routes = compose(
   withView(<AppLayout />),
   mount({
-    "/": redirect("/bases"),
+    "/": redirect("/login"),
+    "/login": compose(
+      withTitle("Hello my friend, please login ..."),
+      withView(PageLayoutComp),
+      withView(<PageBases />)
+    ),
     "/bases": compose(
       withTitle("Bases"),
       withView(PageLayoutComp),
