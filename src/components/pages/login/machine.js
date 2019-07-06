@@ -4,7 +4,9 @@ import { objNameCreator } from "@/helpers/machine";
 export const machineName = "page-login";
 const name = objNameCreator(machineName);
 // guards.js - conditional functions used to determine what the next step in the flow is
-export const guardTypes = {};
+export const guardTypes = {
+  loginSuccess: name.Guard("loginSuccess")
+};
 
 // events
 export const events = {
@@ -13,7 +15,8 @@ export const events = {
 
 // actions.js - functions that perform an action like updating the stateful data in the app
 export const actionTypes = {
-  goToHomePage: name.Action("goToHomePage")
+  goToHomePage: name.Action("goToHomePage"),
+  doLogin: name.Action("doLogin")
 };
 
 // services - external i/o operations
@@ -35,7 +38,11 @@ export default Machine({
       states: {
         [states.LOGIN]: {
           on: {
-            [events.DO_LOGIN]: { target: states.LOGGED }
+            [events.DO_LOGIN]: {
+              // actions: [actionTypes.doLogin],
+              // cond: [guardTypes.loginSuccess],
+              target: states.LOGGED
+            }
           }
         },
         [states.LOGGED]: {

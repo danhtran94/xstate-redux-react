@@ -6,7 +6,7 @@ const { Footer } = Layout;
 const SharedFooter = () => {
   return (
     <Footer style={{ textAlign: "center" }}>
-      versions: gui v3.x.x ~ server v3.x.x
+      current version # gui 4.0.0-alpha ~ server 3.10.0
     </Footer>
   );
 };
