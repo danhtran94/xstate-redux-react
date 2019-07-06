@@ -101,8 +101,10 @@ export const xstateMiddleware = ({ dispatch, getState }) => next => {
       }
 
       const [root, target] = getNestedActor(getState, parent);
-      const isExist = !!target.children.get(name);
-      if (isExist) {
+      const child = target.children.get(name);
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (!!child) {
+        svcSetter(child);
         return target;
       }
 
