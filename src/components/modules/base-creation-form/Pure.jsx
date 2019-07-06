@@ -20,7 +20,7 @@ const PureBaseCreationForm = ({
       onOk={onConfirm}
       onCancel={onCancel}
     >
-      <p>Some contents...</p>
+      <p>TODO Form...</p>
     </Modal>
   );
 };
