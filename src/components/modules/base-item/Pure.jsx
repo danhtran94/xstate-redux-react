@@ -12,7 +12,7 @@ const PureBaseItem = ({ modifier, base, onRemove }) => {
         <Icon key="ellipsis" type="ellipsis" />
       ]}
     >
-      <Meta title={`# ${base.id}`} description="This is the description" />
+      <Meta title={base.name} description={base.id} />
     </Card>
   );
 };

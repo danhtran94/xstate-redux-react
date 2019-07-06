@@ -1,9 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { bindActionCreators } from "redux";
 import { send } from "xstate";
 import { connect } from "react-redux";
 import { useService } from "@xstate/react";
 import { compose } from "ramda";
+import { Form } from "antd";
 
 import { intercept } from "@/helpers/intercept";
 import { getSvc } from "@/helpers/machine";
@@ -39,17 +40,30 @@ export const HocCtrlBaseCreationForm = PureView => {
         }),
       []
     );
+    const formRef = useRef();
     const [current, send] = useService(service);
 
     return (
       <PureView
+        wrappedComponentRef={formRef}
         showModal={current.matches(states.INIT)}
         creating={current.matches(states.CREATING)}
         error={current.matches(states.ERROR)}
-        modifier={current.value}
-        onConfirm={() =>
-          send({ type: events.CONFIRM, data: { id: "from-creation-form" } })
-        }
+        onConfirm={() => {
+          if (formRef.current) {
+            formRef.current.validateFields((err, values) => {
+              if (err) {
+                return;
+              }
+
+              send({
+                type: events.CONFIRM,
+                data: values
+              });
+              formRef.current.resetFields();
+            });
+          }
+        }}
         onCancel={() => send({ type: events.CANCEL })}
       />
     );
@@ -68,5 +82,6 @@ export default compose(
         dispatch
       )
   ),
-  HocCtrlBaseCreationForm
+  HocCtrlBaseCreationForm,
+  Form.create({ name: "base-creation" })
 )(PureBaseCreationForm);
