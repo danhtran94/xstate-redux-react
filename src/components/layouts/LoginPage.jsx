@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { css } from "@emotion/core";
 import { View } from "react-navi";
 import { Layout, Row, Col } from "antd";
 
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 
 const colMarginTop = css`
   margin-top: 2rem;
@@ -15,7 +15,9 @@ const LayoutLoginPage = ({ footer }) => {
       <Content>
         <Row type="flex" justify="center">
           <Col css={colMarginTop}>
-            <View />
+            <Suspense fallback={null}>
+              <View />
+            </Suspense>
           </Col>
         </Row>
       </Content>
