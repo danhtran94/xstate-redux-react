@@ -196,6 +196,7 @@ module.exports = {
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),
     hot: true,
+    stats: "minimal",
     historyApiFallback: true // single-page application
   },
   stats: { children: false, modules: false, entrypoints: false }
