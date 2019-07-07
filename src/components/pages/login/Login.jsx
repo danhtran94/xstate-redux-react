@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { useService } from "@xstate/react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -68,7 +68,7 @@ export const handlerMaker = ({ navigation }) => ({ dispatch, getState }) =>
     }
   });
 
-const CtrlPageLogin = ({ regService }) => {
+const CtrlPageLogin = ({ regService, user }) => {
   const navigation = useNavigation();
   const service = useMemo(
     () =>
@@ -78,21 +78,23 @@ const CtrlPageLogin = ({ regService }) => {
       }),
     []
   );
-  useEffect(() => () => service.stop(), []); // release machine after login
+  // useEffect(() => () => service.stop(), []); // release machine after login
   const [current, send] = useService(service);
 
   return (
     <PurePageLogin
+      logged={current.matches({ [states.INIT]: [states.LOGGED] })}
       logging={current.matches({ [states.INIT]: [states.LOGGING] })}
       onLogin={() => {
         send(events.DO_LOGIN);
       }}
+      user={user}
     />
   );
 };
 
 export default connect(
-  null,
+  state => ({ user: state.user }),
   dispatch =>
     bindActionCreators(
       {
