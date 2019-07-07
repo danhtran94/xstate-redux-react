@@ -19,12 +19,10 @@ if (length === 2) {
 const pascalName = camelCase(name, { pascalCase: true });
 // var camelName = camelCase(name);
 
-indexTemplate = `
-export { default } from "./${pascalName}";
+indexTemplate = `export { default } from "./${pascalName}";
 `;
 
-machineTemplate = `
-import { Machine } from "xstate";
+machineTemplate = `import { Machine } from "xstate";
 import { objNameCreator, spawnEventLogic } from "@/helpers/machine";
 
 const machineName = "${name}";
@@ -83,8 +81,7 @@ export default Machine({
 });
 `;
 
-pureViewTemplate = `
-import React from "react";
+pureViewTemplate = `import React from "react";
 import { Button } from "antd";
 
 const Pure${pascalName} = ({ loading, success, onDo }) => {
@@ -106,8 +103,7 @@ export default Pure${pascalName};
 `;
 
 if (type === "module") {
-  ctrlTemplate = `
-import React, { useMemo } from "react";
+  ctrlTemplate = `import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import { useService } from "@xstate/react";
 import { bindActionCreators } from "redux";
@@ -136,7 +132,7 @@ const handler = ({ getState, dispatch }) =>
   });
 
 export const HocCtrl${pascalName} = PureView =>
-  function Ctrl${pascalName}({ regService, base, idx }) {    
+  function Ctrl${pascalName}({ regService }) {    
     const service = useMemo(
       () =>
         regService(handler, {
@@ -182,9 +178,10 @@ const files = [
 
 fs.mkdir(path, { recursive: true }, err => {
   if (err) throw err;
+  console.log("🐰", " creating", type, name);
   files.forEach(file => {
-    fs.writeFile(`${path}/${file.fileName}`, file.content, err => {
-      if (err) throw err;
-    });
+    fs.writeFileSync(`${path}/${file.fileName}`, file.content);
+    console.log("created", `${path}/${file.fileName}`);
   });
+  console.log("💫", " complete!");
 });
