@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import { Button } from "antd";
 
-export const PurePageLogin = ({ onLogin }) => {
-  const [loading, setLoading] = useState(false);
-  const handleClick = () => {
-    setLoading(true);
-    onLogin();
-  };
-
+export const PurePageLogin = ({ logging, onLogin }) => {
   return (
-    <Button loading={loading} icon="user" type="primary" onClick={handleClick}>
+    <Button loading={logging} icon="user" type="primary" onClick={onLogin}>
       Login
     </Button>
   );

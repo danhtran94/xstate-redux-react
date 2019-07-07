@@ -158,11 +158,12 @@ module.exports = {
   },
   plugins: [
     // new webpack.NormalModuleReplacementPlugin(/\/lang\/zh-CN/, "./lang/en"),
+    new DotENV({
+      path: path.resolve(__dirname, "./.env"),
+      systemvars: true
+    }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(ENV)
-    }),
-    new DotENV({
-      systemvars: true
     }),
     new MiniCSSExtractPlugin({
       filename: `[name].[contenthash:${hashLength}].css`,
