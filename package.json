@@ -2,6 +2,9 @@
   "name": "xstate-redux-react",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "^10.15.3"
+  },
   "license": "MIT",
   "scripts": {
     "stats": "NODE_ENV=production webpack --profile --json > dist/stats.json",
@@ -9,7 +12,8 @@
     "build": "rm -rf dist && NODE_ENV=production webpack --progress",
     "now-build": "rm -rf dist && NODE_ENV=development webpack --progress",
     "build:dev": "rm -rf dist && NODE_ENV=development webpack --progress",
-    "dev": "NODE_ENV=development webpack-dev-server --port 3000"
+    "dev": "NODE_ENV=development webpack-dev-server --port 3000",
+    "gen": "node tools/generator.js"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",
@@ -25,6 +29,7 @@
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
     "babel-plugin-import": "^1.12.0",
+    "camelcase": "^5.3.1",
     "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^3.0.0",
     "cssnano": "^4.1.10",
