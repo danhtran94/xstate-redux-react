@@ -6,6 +6,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
 const TerserWebpackPlugin = require("terser-webpack-plugin");
+const DotENV = require("dotenv-webpack");
 
 const PUBLIC_PATH = process.env.PUBLIC_PATH ? process.env.PUBLIC_PATH : "/";
 const ENV = process.env.NODE_ENV ? process.env.NODE_ENV : "development";
@@ -159,6 +160,9 @@ module.exports = {
     // new webpack.NormalModuleReplacementPlugin(/\/lang\/zh-CN/, "./lang/en"),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(ENV)
+    }),
+    new DotENV({
+      systemvars: true
     }),
     new MiniCSSExtractPlugin({
       filename: `[name].[contenthash:${hashLength}].css`,
