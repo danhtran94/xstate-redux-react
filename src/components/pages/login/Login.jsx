@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useService } from "@xstate/react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { useNavigation } from "react-navi";
+import { useNavigation, useCurrentRoute } from "react-navi";
 import auth0 from "auth0-js";
 
 import { xstateMutations } from "@/resources/xstates";
@@ -26,7 +26,10 @@ const webAuth = new auth0.WebAuth({
   scope: "openid profile email"
 });
 
-export const handlerMaker = ({ navigation }) => ({ dispatch, getState }) =>
+export const handlerMaker = ({ navigation, route }) => ({
+  dispatch,
+  getState
+}) =>
   machine.withConfig({
     actions: {
       [actionTypes.goToHomePage]: () => {
@@ -62,6 +65,12 @@ export const handlerMaker = ({ navigation }) => ({ dispatch, getState }) =>
       ) {
         return !!idTokenPayload && !!accessToken;
       },
+      [guardTypes.shouldRedirect]() {
+        return !!route.url.hash;
+      },
+      [guardTypes.shouldLogin]() {
+        return !route.url.hash;
+      },
       [guardTypes.loginFail](ctx, evt) {
         return true;
       }
@@ -70,9 +79,11 @@ export const handlerMaker = ({ navigation }) => ({ dispatch, getState }) =>
 
 const CtrlPageLogin = ({ regService, user }) => {
   const navigation = useNavigation();
+  const route = useCurrentRoute();
+
   const service = useMemo(
     () =>
-      regService(handlerMaker({ navigation }), {
+      regService(handlerMaker({ navigation, route }), {
         name: "page-login",
         watch: true
       }),
@@ -83,6 +94,7 @@ const CtrlPageLogin = ({ regService, user }) => {
 
   return (
     <PurePageLogin
+      redirect={current.matches({ [states.INIT]: [states.REDIRECT] })}
       logged={current.matches({ [states.INIT]: [states.LOGGED] })}
       logging={current.matches({ [states.INIT]: [states.LOGGING] })}
       onLogin={() => {

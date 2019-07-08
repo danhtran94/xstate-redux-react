@@ -6,7 +6,9 @@ const name = objNameCreator(machineName);
 // guards.js - conditional functions used to determine what the next step in the flow is
 export const guardTypes = {
   loginSuccess: name.Guard("loginSuccess"),
-  loginFail: name.Guard("loginFail")
+  loginFail: name.Guard("loginFail"),
+  shouldLogin: name.Guard("shouldLogin"),
+  shouldRedirect: name.Guard("shouldRedirect")
 };
 
 // events
@@ -30,7 +32,8 @@ export const states = {
   INIT: name.State("INIT"),
   LOGIN: name.State("LOGIN"),
   LOGGING: name.State("LOGGING"),
-  LOGGED: name.State("LOGGED")
+  LOGGED: name.State("LOGGED"),
+  REDIRECT: name.State("REDIRECT")
 };
 
 export default Machine({
@@ -46,6 +49,10 @@ export default Machine({
           on: {
             [events.DO_LOGIN]: {
               target: states.LOGGING
+            },
+            "": {
+              cond: guardTypes.shouldRedirect,
+              target: states.REDIRECT
             }
           }
         },
@@ -67,7 +74,8 @@ export default Machine({
         },
         [states.LOGGED]: {
           entry: [actionTypes.goToHomePage]
-        }
+        },
+        [states.REDIRECT]: {}
       }
     }
   }

@@ -2,7 +2,19 @@ import React, { useState } from "react";
 import { Button } from "antd";
 import { css } from "@emotion/core";
 
-export const PurePageLogin = ({ logged, logging, onLogin, user }) => {
+export const PurePageLogin = ({ redirect, logged, logging, onLogin, user }) => {
+  if (redirect) {
+    return (
+      <div
+        css={css`
+          margin: 0 auto;
+          overflow: hidden;
+        `}
+      >
+        {`Login success, redirecting...`}
+      </div>
+    );
+  }
   return logged ? (
     <div
       css={css`
