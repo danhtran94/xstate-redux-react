@@ -42,7 +42,6 @@ export default Machine({
   context: {},
   states: {
     [states.INIT]: {
-      entry: actionTypes.auth0Cb,
       initial: states.LOGIN,
       states: {
         [states.LOGIN]: {
@@ -75,7 +74,9 @@ export default Machine({
         [states.LOGGED]: {
           entry: [actionTypes.goToHomePage]
         },
-        [states.REDIRECT]: {}
+        [states.REDIRECT]: {
+          entry: actionTypes.auth0Cb
+        }
       }
     }
   }
