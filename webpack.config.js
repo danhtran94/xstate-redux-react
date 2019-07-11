@@ -91,7 +91,7 @@ module.exports = {
     ],
     splitChunks: {
       chunks: "all",
-      maxInitialRequests: 10,
+      maxInitialRequests: 15,
       minSize: 0,
       cacheGroups: {
         vendor: {
@@ -106,7 +106,7 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
-    mainFields: ["browser", "jsnext:main", "main"],
+    mainFields: ["esm2015", "module", "jsnext:main", "main", "browser"],
     alias: {
       // tree-shaking ant-icons
       "@ant-design/icons/lib/dist$": path.resolve(__dirname, "src/components/units/Icons.jsx"),
@@ -170,7 +170,9 @@ module.exports = {
     // new webpack.NormalModuleReplacementPlugin(/\/lang\/zh-CN/, "./lang/en"),
     new DotENV({
       path: path.resolve(__dirname, "./.env"),
-      systemvars: true,
+      safe: true,
+      systemvars: isProd,
+      defaults: !isProd,
     }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(ENV),
