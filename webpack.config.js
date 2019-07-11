@@ -21,8 +21,8 @@ function cssLoaders(isModule) {
       ? [MiniCSSExtractPlugin.loader]
       : [
           {
-            loader: "style-loader"
-          }
+            loader: "style-loader",
+          },
         ]),
     {
       loader: "css-loader",
@@ -31,88 +31,94 @@ function cssLoaders(isModule) {
         ...(isModule
           ? {
               modules: true,
-              localIdentName: isProd
-                ? `[hash:base64:${hashLength}]`
-                : `[name]__[local]___[hash:base64:${hashLength}]`
+              localIdentName: isProd ? `[hash:base64:${hashLength}]` : `[name]__[local]___[hash:base64:${hashLength}]`,
             }
           : {}),
-        importLoaders: 2
-      }
+        importLoaders: 2,
+      },
     },
     {
-      loader: "postcss-loader"
+      loader: "postcss-loader",
     },
     {
       loader: "sass-loader",
       options: {
-        sourceMap: true
-      }
-    }
+        sourceMap: true,
+      },
+    },
   ];
 }
 
 module.exports = {
   context: path.resolve(__dirname, "src"),
-  entry: [
-    ...(isProd ? [] : ["react-hot-loader/patch"]),
-    path.resolve(__dirname, "src")
-  ],
+  entry: [...(isProd ? [] : ["react-hot-loader/patch"]), path.resolve(__dirname, "src")],
   output: {
     publicPath: PUBLIC_PATH,
     path: path.resolve(__dirname, "dist"),
-    filename: `[name].[hash:${hashLength}].js`,
-    chunkFilename: `[name].[chunkhash:${hashLength}].js`
+    filename: `[name].[chunkhash:${hashLength}].js`,
+    chunkFilename: `[name].[chunkhash:${hashLength}].chunk.js`,
   },
+  target: "web",
   mode: isProd ? "production" : ENV,
   performance: {
     maxEntrypointSize: 2 * 1000 * 1024,
-    maxAssetSize: 1 * 1000 * 1024
+    maxAssetSize: 1 * 1000 * 1024,
   },
   optimization: {
+    nodeEnv: "production",
+    sideEffects: true,
+    concatenateModules: true,
+    runtimeChunk: "single",
     minimize: isProd,
+    minimizer: [
+      new TerserWebpackPlugin({
+        terserOptions: {
+          warnings: false,
+          compress: {
+            comparisons: false,
+          },
+          parse: {},
+          mangle: true,
+          output: {
+            comments: false,
+            ascii_only: true,
+          },
+        },
+        parallel: true,
+        cache: true,
+        sourceMap: true,
+      }),
+    ],
     splitChunks: {
+      chunks: "all",
+      maxInitialRequests: 10,
+      minSize: 0,
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
           name(module) {
-            const packageName = module.context.match(
-              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
-            )[1];
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
             return `npm.${packageName.replace("@", "")}`;
-          }
-        }
-      }
+          },
+        },
+      },
     },
-    minimizer: [
-      new TerserWebpackPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true, // Must be set to true if using source-maps in production | disable it if you don't have enough RAM
-        terserOptions: {
-          compress: {
-            drop_console: isProd
-          }
-        }
-      })
-    ]
   },
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
+    mainFields: ["browser", "jsnext:main", "main"],
     alias: {
       // tree-shaking ant-icons
-      "@ant-design/icons/lib/dist$": path.resolve(
-        __dirname,
-        "src/components/units/Icons.jsx"
-      ),
+      "@ant-design/icons/lib/dist$": path.resolve(__dirname, "src/components/units/Icons.jsx"),
       src: path.resolve(__dirname, "src"),
       "@": path.resolve(__dirname, "src"),
       ...(isProd
         ? {}
         : {
-            "react-dom": "@hot-loader/react-dom"
-          })
+            "react-dom": "@hot-loader/react-dom",
+          }),
     },
-    modules: ["node_modules", "src"] // path to search when use Relative Path
+    modules: ["node_modules", "src"], // path to search when use Relative Path
   },
   module: {
     rules: [
@@ -120,93 +126,104 @@ module.exports = {
         test: /\.[t|j]sx?$/,
         loader: "babel-loader",
         options: {
-          cacheDirectory: true
+          cacheDirectory: true,
         },
         sideEffects: false,
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
-        test: /\.comp\.s?css$/,
+        test: /\.scoped\.s?css$/,
         oneOf: [
           {
-            use: cssLoaders(true)
+            use: cssLoaders(true),
           },
           {
             resourceQuery: /raw/,
-            use: cssLoaders(false)
-          }
-        ]
+            use: cssLoaders(false),
+          },
+        ],
       },
       {
-        test: /^((?!\.comp).)*s?css$/,
-        use: cssLoaders(false)
+        test: /^((?!\.scoped).)*s?css$/,
+        use: cssLoaders(false),
       },
       {
         test: /\.(ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "file-loader",
-        options: { name: "[name].[ext]" }
+        options: { name: "[name].[ext]" },
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "file-loader",
-        options: { name: "fonts/[name].[ext]" }
+        options: { name: "fonts/[name].[ext]" },
       },
       {
         test: /\.(jpg|gif|png|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "url-loader",
         options: {
-          limit: 8192
-        }
-      }
-    ]
+          limit: 8192,
+        },
+      },
+    ],
   },
   plugins: [
     // new webpack.NormalModuleReplacementPlugin(/\/lang\/zh-CN/, "./lang/en"),
     new DotENV({
       path: path.resolve(__dirname, "./.env"),
-      systemvars: true
+      systemvars: true,
     }),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify(ENV)
+      "process.env.NODE_ENV": JSON.stringify(ENV),
+    }),
+    new webpack.HashedModuleIdsPlugin({
+      hashFunction: "sha256",
+      hashDigest: "hex",
+      hashDigestLength: 20,
     }),
     new MiniCSSExtractPlugin({
       filename: `[name].[contenthash:${hashLength}].css`,
-      chunkFilename: `[name].[contenthash:${hashLength}].css`
+      chunkFilename: `[name].[contenthash:${hashLength}].chunk.css`,
     }),
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, "src", "static"),
-        ignore: [".*"]
-      }
+        ignore: [".*"],
+      },
     ]),
     ...(isProd
       ? [
           new webpack.SourceMapDevToolPlugin({
             publicPath: "http://localhost:8080/",
             filename: "sourcemaps/[file].map",
-            exclude: [/vendor.*.js/]
-          })
+            exclude: [/vendor.*.js/],
+          }),
         ]
       : [
           new webpack.HotModuleReplacementPlugin({
             // Options...
-          })
+          }),
         ]),
     ...(ENV !== "test"
       ? [
           new HTMLWebpackPlugin({
             template: path.resolve(__dirname, "src", "index.html"),
-            filename: "./index.html"
-          })
+            filename: "./index.html",
+          }),
         ]
-      : [])
+      : []),
   ],
   devtool: isProd ? false : "cheap-module-eval-source-map",
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),
     hot: true,
     stats: "minimal",
-    historyApiFallback: true // single-page application
+    historyApiFallback: true, // single-page application
   },
-  stats: { children: false, modules: false, entrypoints: false }
+  stats: { children: false, modules: false, entrypoints: false },
+  node: {
+    dgram: "empty",
+    fs: "empty",
+    net: "empty",
+    tls: "empty",
+  },
 };

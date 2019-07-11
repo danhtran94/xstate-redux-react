@@ -2,25 +2,35 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    es6: true
+    es6: true,
   },
-  extends: ["eslint:recommended", "plugin:react/recommended"],
+  extends: [
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:react/recommended",
+    "eslint:recommended",
+  ],
   globals: {
     Atomics: "readonly",
-    SharedArrayBuffer: "readonly"
+    SharedArrayBuffer: "readonly",
   },
-  parser: "babel-eslint",
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
+      legacyDecorators: true,
     },
     ecmaVersion: 2018,
-    sourceType: "module"
+    sourceType: "module",
   },
   plugins: ["react"],
   rules: {
     "no-console": ["warn"],
     "react/prop-types": ["warn"],
-    "no-unused-vars": ["warn"]
-  }
+    "no-unused-vars": ["warn"],
+    "@typescript-eslint/explicit-member-accessibility": ["off"],
+    "@typescript-eslint/no-empty-interface": ["off"],
+    "@typescript-eslint/no-parameter-properties": ["off"],
+    "@typescript-eslint/explicit-function-return-type": ["off"],
+  },
 };

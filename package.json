@@ -18,6 +18,7 @@
   "devDependencies": {
     "@babel/core": "^7.5.4",
     "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.5.1",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
@@ -25,6 +26,8 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@emotion/babel-preset-css-prop": "^10.0.14",
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0",
     "autoprefixer": "^9.6.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
@@ -35,15 +38,19 @@
     "cssnano": "^4.1.10",
     "dotenv-webpack": "^1.7.0",
     "eslint": "^5.16.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.2",
     "file-loader": "^4.0.0",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.7.0",
     "node-sass": "^4.12.0",
     "postcss-loader": "^3.0.0",
+    "prettier": "^1.18.2",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "^1.3.0",
+    "typescript": "^3.5.3",
     "url-loader": "^2.0.1",
     "webpack": "^4.35.3",
     "webpack-bundle-analyzer": "^3.3.2",
@@ -51,6 +58,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "@datorama/akita": "^4.4.1",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "@hot-loader/react-dom": "^16.8.6",
@@ -67,6 +75,7 @@
     "react-navi": "^0.12.9",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
+    "rxjs": "^6.5.2",
     "xstate": "^4.6.7"
   }
 }
