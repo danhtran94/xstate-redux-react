@@ -5455,10 +5455,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-navi@^0.12.9:
-  version "0.12.9"
-  resolved "https://registry.yarnpkg.com/navi/-/navi-0.12.9.tgz#ef62adadeb6a2300894eca3e59a252d41acc22b2"
-  integrity sha512-CjXTnFntNS0r5R+ZNSMlqZqqedZqRJtyuo1lYm5Hr+NHIGcjTLuVsvz0zLF7jjiyBs6aOy7clta4rUITrBUGyQ==
+navi@^0.12.10:
+  version "0.12.10"
+  resolved "https://registry.yarnpkg.com/navi/-/navi-0.12.10.tgz#0bbbafdb907094a30f2d0452426f2e249428b961"
+  integrity sha512-TGeSpcwED3a7BZQwlM4rezfqfaXorYCezwUC7n/9ch/YR/nNcEfxmjEgx9qBN4CXxtpVqB2E1f1Ufm7/BteKCg==
   dependencies:
     history "^4.9.0"
 
