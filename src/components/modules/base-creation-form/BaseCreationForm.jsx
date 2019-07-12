@@ -15,27 +15,26 @@ import machine, { states, events, actionTypes, serviceTypes } from "./machine";
 
 import PureBaseCreationForm from "./Pure";
 
-const handler = ({ getMachines }) =>
-  machine.withConfig({
-    actions: {
-      [actionTypes.reloadBases]: send(baseListEvents.ADDED_BASE, {
-        to: () => machineQuery.getEntity("base-list").service,
-      }),
+const implMachine = machine.withConfig({
+  actions: {
+    [actionTypes.reloadBases]: send(baseListEvents.ADDED_BASE, {
+      to: () => machineQuery.getEntity("base-list").service,
+    }),
+  },
+  services: {
+    [serviceTypes.createNewBase](ctx, event) {
+      return new Promise(resolve => {
+        resolve(event.data);
+      }).then(data => baseService.addBase(data));
     },
-    services: {
-      [serviceTypes.createNewBase](ctx, event) {
-        return new Promise(resolve => {
-          resolve(event.data);
-        }).then(data => baseService.addBase(data));
-      },
-    },
-  });
+  },
+});
 
 export const HocCtrlBaseCreationForm = PureView => {
   return function CtrlBaseCreationForm() {
     const service = useMemo(
       () =>
-        machineService.regService(handler, {
+        machineService.regService(implMachine, {
           name: "base-creation-form",
         }),
       [],

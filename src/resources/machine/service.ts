@@ -1,15 +1,10 @@
 import { Interpreter, State, interpret, StateMachine } from "xstate";
-import { HashMap } from "@datorama/akita";
-import { compose, path, pathOr } from "ramda";
+import { pathOr } from "ramda";
 
 import { createSpawnEvent, getActor } from "@/helpers/machine";
-import { MachineState } from "./domain";
-import { MachineStore, machineStore } from "./store";
 
-interface MachineHandlerParams {
-  getMachines: () => HashMap<MachineState>;
-}
-type MachineHandler = (param: MachineHandlerParams) => StateMachine<any, any, any>;
+import { MachineStore, machineStore } from "./store";
+import { machineQuery } from "./query";
 
 export class MachineService {
   constructor(private machineStore: MachineStore) {}
@@ -25,16 +20,16 @@ export class MachineService {
         this.removeService(name);
       });
 
+    const machineState = {
+      service,
+      state: service.state,
+    };
+
     if (watch) {
-      this.machineStore.upsert(name, {
-        service,
-        state: service.state,
-      });
-    } else {
-      this.machineStore.upsert(name, {
-        service,
-      });
+      delete machineState.state;
     }
+
+    this.machineStore.upsert(name, machineState);
   }
 
   updateState({ name, machineState }: { name: string; machineState: State<any, any> }): void {
@@ -49,7 +44,7 @@ export class MachineService {
   }
 
   regService(
-    handler: MachineHandler,
+    machine: StateMachine<any, any, any>,
     {
       parent,
       name,
@@ -58,13 +53,7 @@ export class MachineService {
       svcSetter,
     }: { parent?: string; name: string; ref?: string; watch?: boolean; svcSetter?: (svc) => void },
   ): Interpreter<any, any, any> {
-    const getMachines = compose(
-      path(["entities"]),
-      this.machineStore._value.bind(this.machineStore),
-    ) as () => HashMap<MachineState>;
-
-    const stateMachines = getMachines();
-    const machine = handler({ getMachines });
+    const stateMachines = machineQuery.getValue().entities;
 
     if (!parent) {
       const isExist = !!stateMachines[name];
@@ -94,10 +83,12 @@ export class MachineService {
         ref,
         watch,
         svcSetter: (svc: Interpreter<any, any>) => {
-          if (watch) {
-            this.addService({ name, service: svc, watch: true });
+          if (svc) {
+            if (watch) {
+              this.addService({ name, service: svc, watch: true });
+            }
+            svcSetter(svc);
           }
-          svcSetter(svc);
         },
       }),
     );

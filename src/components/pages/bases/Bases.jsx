@@ -7,17 +7,16 @@ import { machineService } from "@/resources/machine/service";
 import machine from "./machine";
 import PurePageBases from "./Pure";
 
-export const handler = ({ getMachines }) =>
-  machine.withConfig({
-    actions: {
-      ...syncSpawnedReduxActs,
-    },
-  });
+export const implMachine = machine.withConfig({
+  actions: {
+    ...syncSpawnedReduxActs,
+  },
+});
 
 const CtrlPageBases = () => {
   const service = useMemo(
     () =>
-      machineService.regService(handler, {
+      machineService.regService(implMachine, {
         name: "page-bases",
       }),
     [],

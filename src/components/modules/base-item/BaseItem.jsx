@@ -9,30 +9,28 @@ import { machineService } from "@/resources/machine/service";
 
 import { events as baseListEvents } from "@/components/modules/base-list/machine";
 import machine, { actionTypes, serviceTypes, events } from "./machine";
-
 import PureBaseItem from "./Pure";
 
-const handler = ({ getMachines }) =>
-  machine.withConfig({
-    actions: {
-      [actionTypes.notifyDeleted]: sendParent(baseListEvents.REMOVE_BASE),
-      [actionTypes.notifyError](ctx, evt) {},
+const implMachine = machine.withConfig({
+  actions: {
+    [actionTypes.notifyDeleted]: sendParent(baseListEvents.REMOVE_BASE),
+    [actionTypes.notifyError](ctx, evt) {},
+  },
+  services: {
+    [serviceTypes.removeBase](ctx, evt) {
+      return new Promise((resolve, reject) => {
+        resolve();
+      });
     },
-    services: {
-      [serviceTypes.removeBase](ctx, evt) {
-        return new Promise((resolve, reject) => {
-          resolve();
-        });
-      },
-    },
-  });
+  },
+});
 
 export const HocCtrlBaseItem = PureView =>
   function CtrlBaseItem({ base, idx }) {
     const [current, svc, svcSetter] = useActor();
     useMemo(
       () =>
-        machineService.regService(handler, {
+        machineService.regService(implMachine, {
           parent: "base-list",
           name: `base-item-${idx}`,
           ref: `baseItemRef${idx}`,

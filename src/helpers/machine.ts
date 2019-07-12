@@ -97,7 +97,7 @@ export const useActor = () => {
     if (svc) {
       setSvcState(svc.state);
 
-      const listener = state => {
+      const listener = (state: State<any, any>) => {
         if (state.changed) {
           setSvcState(state);
         }

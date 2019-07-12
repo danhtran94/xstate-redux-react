@@ -2,17 +2,11 @@ import React, { useMemo } from "react";
 import { View } from "react-navi";
 
 import { InterceptProvider } from "@/helpers/intercept";
-import { machineService } from "@/resources/machine/service";
 import { syncSpawnedReduxActs } from "@/helpers/machine";
 
-import appMachine from "./appMachine";
+import { machineService } from "@/resources/machine/service";
 
-const handler = ({ getMachines }) =>
-  appMachine.withConfig({
-    actions: {
-      ...syncSpawnedReduxActs,
-    },
-  });
+import appMachine from "./appMachine";
 
 // const BaseCreate = props => {
 //   console.log(props);
@@ -25,7 +19,15 @@ const handler = ({ getMachines }) =>
 // };
 
 export default function App() {
-  useMemo(() => machineService.regService(handler, { name: "app" }), []);
+  useMemo(() => {
+    const implMachine = appMachine.withConfig({
+      actions: {
+        ...syncSpawnedReduxActs,
+      },
+    });
+
+    return machineService.regService(implMachine, { name: "app" });
+  }, []);
 
   return (
     <div className="app">

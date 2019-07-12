@@ -3,14 +3,14 @@ import { useService } from "@xstate/react";
 import { useNavigation, useCurrentRoute } from "react-navi";
 import auth0 from "auth0-js";
 
+import { use$ } from "@/helpers/hooks";
+
 import { machineService } from "@/resources/machine/service";
 import { userService } from "@/resources/user/service";
 import { userQuery } from "@/resources/user/query";
-import { useObservable } from "@/helpers/hooks";
-
-import PurePageLogin from "./Pure";
 
 import machine, { actionTypes, events, guardTypes, serviceTypes, states } from "./machine";
+import PurePageLogin from "./Pure";
 
 const webAuth = new auth0.WebAuth({
   domain: process.env.AUTH0_DOMAIN,
@@ -20,7 +20,7 @@ const webAuth = new auth0.WebAuth({
   scope: "openid profile email",
 });
 
-export const handlerMaker = ({ navigation, route }) => ({ getMachines }) =>
+export const machineCreator = ({ navigation, route }) =>
   machine.withConfig({
     actions: {
       [actionTypes.goToHomePage]: () => {
@@ -71,16 +71,17 @@ export const handlerMaker = ({ navigation, route }) => ({ getMachines }) =>
 const CtrlPageLogin = () => {
   const navigation = useNavigation();
   const route = useCurrentRoute();
+
   const service = useMemo(
     () =>
-      machineService.regService(handlerMaker({ navigation, route }), {
+      machineService.regService(machineCreator({ navigation, route }), {
         name: "page-login",
         watch: true,
       }),
     [],
   );
 
-  const user = useObservable(userQuery.getCurrentUser$);
+  const user = use$(userQuery.getCurrentUser$);
   const [current, send] = useService(service);
 
   return (
