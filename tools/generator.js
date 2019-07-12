@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
 const fs = require("fs");
 const camelCase = require("camelcase");
@@ -104,38 +105,37 @@ export default Pure${pascalName};
 
 if (type === "module") {
   ctrlTemplate = `import React, { useMemo } from "react";
-import { connect } from "react-redux";
 import { useService } from "@xstate/react";
-import { bindActionCreators } from "redux";
 import { compose } from "ramda";
 
 import { intercept } from "@/helpers/intercept";
-import { xstateMutations } from "@/resources/xstates";
+
+import { machineService } from "@/resources/machine/service";
+
 import machine, { states, actionTypes, serviceTypes, events } from "./machine";
 import Pure${pascalName} from "./Pure";
 
-const handler = ({ getState, dispatch }) =>
-  machine.withConfig({
-    actions: {
-      [actionTypes.doSomething](ctx, evt) {
-        console.log("do something!");
-      },
+const implMachine = machine.withConfig({
+  actions: {
+    [actionTypes.doSomething](ctx, evt) {
+      console.log("do something!");
     },
-    services: {
-      [serviceTypes.doFetch](ctx, evt) {
-        // fake fetch
-        return new Promise((resolve, reject) => {
-          resolve();
-        });
-      }
+  },
+  services: {
+    [serviceTypes.doFetch](ctx, evt) {
+      // fake fetch
+      return new Promise((resolve, reject) => {
+        resolve();
+      });
     }
-  });
+  }
+});
 
 export const HocCtrl${pascalName} = PureView =>
-  function Ctrl${pascalName}({ regService }) {    
+  function Ctrl${pascalName}() {    
     const service = useMemo(
       () =>
-        regService(handler, {
+        machineService.regService(implMachine, {
           name: "${name}",
         }),
       []
@@ -152,17 +152,7 @@ export const HocCtrl${pascalName} = PureView =>
   };
 
 export default compose(
-  intercept,
-  connect(
-    (state, ownProps) => ({}),
-    dispatch =>
-      bindActionCreators(
-        {
-          regService: xstateMutations.regService
-        },
-        dispatch
-      )
-  ),
+  intercept,  
   HocCtrl${pascalName}
 )(Pure${pascalName});
 `;
@@ -173,7 +163,7 @@ const files = [
   { fileName: `index.js`, content: indexTemplate },
   { fileName: `Pure.jsx`, content: pureViewTemplate },
   { fileName: `${pascalName}.jsx`, content: ctrlTemplate },
-  { fileName: `machine.js`, content: machineTemplate }
+  { fileName: `machine.js`, content: machineTemplate },
 ];
 
 fs.mkdir(path, { recursive: true }, err => {
