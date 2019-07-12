@@ -1,59 +1,57 @@
 import React, { useMemo } from "react";
 import { send } from "xstate";
 import { useService } from "@xstate/react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
 import { compose } from "ramda";
 
 import { intercept } from "@/helpers/intercept";
-import { getSvc } from "@/helpers/machine";
-import { xstateMutations } from "@/resources/xstates";
-import { basesMutations } from "@/resources/bases";
 import { syncSpawnedReduxActs } from "@/helpers/machine";
+import { useObservable } from "@/helpers/hooks";
+
+import { baseQuery } from "@/resources/base/query";
+import { baseService } from "@/resources/base/service";
+import { machineQuery } from "@/resources/machine/query";
+import { machineService } from "@/resources/machine/service";
 
 import { events as creationEvents } from "@/components/modules/base-creation-form/machine";
-import machine, {
-  states,
-  events,
-  guardTypes,
-  actionTypes,
-  serviceTypes
-} from "./machine";
+import machine, { states, events, guardTypes, actionTypes, serviceTypes } from "./machine";
+
 import PureBaseList from "./Pure";
 
-export const handler = ({ getState: state, dispatch }) =>
+export const handler = ({ getMachines }) =>
   machine.withConfig({
     guards: {
       [guardTypes.shouldCreateNew]() {
-        const { bases } = state();
+        const bases = baseQuery.getAll();
         return bases.length === 0;
-      }
+      },
     },
     actions: {
-      ...syncSpawnedReduxActs(dispatch),
+      ...syncSpawnedReduxActs,
       [actionTypes.beginCreateBase]: send(creationEvents.RESTART, {
-        to: () => getSvc(state, "base-creation-form")
-      })
+        to: () => machineQuery.getEntity("base-creation-form").service,
+      }),
     },
     services: {
       [serviceTypes.fetchBases]() {
         return new Promise(resolve => {
           resolve([]);
-        }).then(data => dispatch(basesMutations.updateBases(data)));
-      }
-    }
+        }).then(data => baseService.updateBases(data));
+      },
+    },
   });
 
 export const HocCtrlBaseList = PureView =>
-  function CtrlBaseList({ regService, bases }) {
+  function CtrlBaseList() {
     const service = useMemo(
       () =>
-        regService(handler, {
-          name: "base-list"
+        machineService.regService(handler, {
+          name: "base-list",
         }),
-      []
+      [],
     );
     const [current, send] = useService(service);
+
+    const bases = useObservable(baseQuery.selectBases$);
 
     return (
       <PureView
@@ -68,17 +66,5 @@ export const HocCtrlBaseList = PureView =>
 
 export default compose(
   intercept,
-  connect(
-    state => ({
-      bases: state.bases
-    }),
-    dispatch =>
-      bindActionCreators(
-        {
-          regService: xstateMutations.regService
-        },
-        dispatch
-      )
-  ),
-  HocCtrlBaseList
+  HocCtrlBaseList,
 )(PureBaseList);

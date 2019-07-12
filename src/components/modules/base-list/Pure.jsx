@@ -4,18 +4,14 @@ import { groupBy, values, addIndex, map } from "ramda";
 
 import BaseItem from "@/components/modules/base-item";
 
-export const PureBaseList = ({
-  empty,
-  error,
-  loading,
-  bases,
-  onCreateBase
-}) => {
+export const PureBaseList = ({ empty, error, loading, bases, onCreateBase }) => {
   if (empty) {
     return (
-      <Button icon="plus" type="primary" onClick={onCreateBase}>
-        Create first base
-      </Button>
+      <div>
+        <Button icon="plus" type="primary" onClick={onCreateBase}>
+          Create first base
+        </Button>
+      </div>
     );
   }
 
@@ -35,7 +31,7 @@ export const PureBaseList = ({
     <div>
       <Button
         style={{
-          marginBottom: "1.5rem"
+          marginBottom: "1.5rem",
         }}
         type="primary"
         icon="plus"
@@ -47,11 +43,7 @@ export const PureBaseList = ({
         <Row key={rowIdx} style={{ marginBottom: "1.5rem" }} gutter={16}>
           {row.map(({ base }, colIdx) => (
             <Col key={colIdx} span={6}>
-              <BaseItem
-                name={`baseItem${rowIdx}${colIdx}`}
-                base={base}
-                idx={`${rowIdx}${colIdx}`}
-              />
+              <BaseItem name={`baseItem${rowIdx}${colIdx}`} base={base} idx={`${rowIdx}${colIdx}`} />
             </Col>
           ))}
         </Row>

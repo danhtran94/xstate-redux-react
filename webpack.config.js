@@ -55,7 +55,7 @@ module.exports = {
   output: {
     publicPath: PUBLIC_PATH,
     path: path.resolve(__dirname, "dist"),
-    filename: `[name].[chunkhash:${hashLength}].js`,
+    filename: `[name].[hash:${hashLength}].js`,
     chunkFilename: `[name].[chunkhash:${hashLength}].chunk.js`,
   },
   target: "web",

@@ -1,20 +1,17 @@
 import React, { useMemo } from "react";
-import { bindActionCreators } from "redux";
-import { useService } from "@xstate/react";
-import { connect } from "react-redux";
 import { View } from "react-navi";
 
 import { InterceptProvider } from "@/helpers/intercept";
+import { machineService } from "@/resources/machine/service";
 import { syncSpawnedReduxActs } from "@/helpers/machine";
-import { xstateMutations } from "@/resources/xstates";
 
 import appMachine from "./appMachine";
 
-const handler = ({ dispatch }) =>
+const handler = ({ getMachines }) =>
   appMachine.withConfig({
     actions: {
-      ...syncSpawnedReduxActs()
-    }
+      ...syncSpawnedReduxActs,
+    },
   });
 
 // const BaseCreate = props => {
@@ -27,9 +24,8 @@ const handler = ({ dispatch }) =>
 //   return <div>Base list module</div>;
 // };
 
-const App = ({ regService }) => {
-  const service = useMemo(() => regService(handler, { name: "app" }), []);
-  const [current, send] = useService(service);
+export default function App() {
+  useMemo(() => machineService.regService(handler, { name: "app" }), []);
 
   return (
     <div className="app">
@@ -45,15 +41,4 @@ const App = ({ regService }) => {
       </InterceptProvider>
     </div>
   );
-};
-
-export default connect(
-  null,
-  dispatch =>
-    bindActionCreators(
-      {
-        regService: xstateMutations.regService
-      },
-      dispatch
-    )
-)(App);
+}

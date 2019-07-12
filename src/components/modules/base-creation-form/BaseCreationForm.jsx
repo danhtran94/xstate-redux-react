@@ -1,44 +1,44 @@
 import React, { useMemo, useRef } from "react";
-import { bindActionCreators } from "redux";
 import { send } from "xstate";
-import { connect } from "react-redux";
 import { useService } from "@xstate/react";
 import { compose } from "ramda";
 import { Form } from "antd";
 
 import { intercept } from "@/helpers/intercept";
-import { getSvc } from "@/helpers/machine";
-import { xstateMutations } from "@/resources/xstates";
-import { basesMutations } from "@/resources/bases";
+
+import { machineQuery } from "@/resources/machine/query";
+import { machineService } from "@/resources/machine/service";
+import { baseService } from "@/resources/base/service";
 
 import { events as baseListEvents } from "@/components/modules/base-list/machine";
 import machine, { states, events, actionTypes, serviceTypes } from "./machine";
+
 import PureBaseCreationForm from "./Pure";
 
-const handler = ({ getState, dispatch }) =>
+const handler = ({ getMachines }) =>
   machine.withConfig({
     actions: {
       [actionTypes.reloadBases]: send(baseListEvents.ADDED_BASE, {
-        to: () => getSvc(getState, "base-list")
-      })
+        to: () => machineQuery.getEntity("base-list").service,
+      }),
     },
     services: {
       [serviceTypes.createNewBase](ctx, event) {
         return new Promise(resolve => {
           resolve(event.data);
-        }).then(data => dispatch(basesMutations.addBase(data)));
-      }
-    }
+        }).then(data => baseService.addBase(data));
+      },
+    },
   });
 
 export const HocCtrlBaseCreationForm = PureView => {
-  return function CtrlBaseCreationForm({ regService }) {
+  return function CtrlBaseCreationForm() {
     const service = useMemo(
       () =>
-        regService(handler, {
-          name: "base-creation-form"
+        machineService.regService(handler, {
+          name: "base-creation-form",
         }),
-      []
+      [],
     );
     const formRef = useRef();
     const [current, send] = useService(service);
@@ -58,7 +58,7 @@ export const HocCtrlBaseCreationForm = PureView => {
 
               send({
                 type: events.CONFIRM,
-                data: values
+                data: values,
               });
               formRef.current.resetFields();
             });
@@ -72,16 +72,6 @@ export const HocCtrlBaseCreationForm = PureView => {
 
 export default compose(
   intercept,
-  connect(
-    null,
-    dispatch =>
-      bindActionCreators(
-        {
-          regService: xstateMutations.regService
-        },
-        dispatch
-      )
-  ),
   HocCtrlBaseCreationForm,
-  Form.create({ name: "base-creation" })
+  Form.create({ name: "base-creation" }),
 )(PureBaseCreationForm);
