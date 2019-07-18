@@ -2,38 +2,36 @@ import React from "react";
 import { compose, mount, redirect, withView, withTitle } from "navi";
 
 import LayoutApp from "@/components/layouts/App";
-
-import PageLogin from "@/components/pages/login";
-import PageBases from "@/components/pages/bases";
+import LayoutLoginPage from "@/components/layouts/LoginPage";
+import LayoutCommonPage from "@/components/layouts/CommonPage";
 
 import SharedFooter from "@/components/pages/shared/Footer";
 
 const SharedFooterComp = <SharedFooter />;
+
 const routes = compose(
   withView(<LayoutApp />),
   mount({
     "/": redirect("/login"),
     "/login": compose(
       withTitle("Hello my friend, please login..."),
+      withView(<LayoutLoginPage footer={SharedFooterComp} />),
+      // Page content
       withView(async () => {
-        let { default: LayoutLoginPage } = await import(
-          /* webpackChunkName: "layout-login-page" */ "@/components/layouts/LoginPage"
-        );
-        return <LayoutLoginPage footer={SharedFooterComp} />;
+        let { default: PageLogin } = await import(/* webpackChunkName: "login-page" */ "@/components/pages/login");
+        return <PageLogin />;
       }),
-      withView(<PageLogin />)
     ),
     "/bases": compose(
       withTitle("All your bases"),
+      withView(<LayoutCommonPage footer={SharedFooterComp} />),
+      // Page content
       withView(async () => {
-        let { default: LayoutCommonPage } = await import(
-          /* webpackChunkName: "layout-common-page" */ "@/components/layouts/CommonPage"
-        );
-        return <LayoutCommonPage footer={SharedFooterComp} />;
+        let { default: PageBases } = await import(/* webpackChunkName: "bases-page" */ "@/components/pages/bases");
+        return <PageBases />;
       }),
-      withView(<PageBases />)
-    )
-  })
+    ),
+  }),
 );
 
 export default routes;
