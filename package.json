@@ -58,7 +58,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
-    "@datorama/akita": "^4.5.0",
+    "@datorama/akita": "^4.9.3",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "@hot-loader/react-dom": "^16.8.6",
