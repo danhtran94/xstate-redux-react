@@ -71,7 +71,7 @@
     "ramda": "^0.26.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-hot-loader": "^4.12.7",
+    "react-hot-loader": "^4.12.12",
     "react-navi": "^0.12.9",
     "rxjs": "^6.5.2",
     "xstate": "^4.6.7"
