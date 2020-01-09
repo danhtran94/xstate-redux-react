@@ -825,10 +825,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@datorama/akita@^4.5.0":
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/@datorama/akita/-/akita-4.5.0.tgz#f398c0b6489573739dfb1cb3b8960efec9854594"
-  integrity sha512-AsDHiGBStyoEwNsuwQ4dxtOTSNM2k4+7G4rTccZ6xLXFChKhjf2z7rznGyiuUkaOXpmCPJbUQw0j2k2a0EXANg==
+"@datorama/akita@^4.17.2":
+  version "4.17.2"
+  resolved "https://registry.yarnpkg.com/@datorama/akita/-/akita-4.17.2.tgz#17be940f267286b4a1efc4424374490d8baaafc5"
+  integrity sha512-FIhv/qEdMvm/0XD2jHSQmNH5QaNELOYZCty6l57Ll+/fWEC955e+lts2Zb3k4Uv9IBwkykeF8nOMLmei5Lh8kQ==
   dependencies:
     schematics-utilities "^1.1.1"
     tslib "^1.9.0"
